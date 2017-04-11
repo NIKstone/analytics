@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>xiyou analytics -- v3</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+	<script src="http://ui.xiyoucdn.com/qui.js"></script>
+	<style>
+		* { margin: 0; padding: 0; }
+		.btn {
+			display: inline-block;
+			margin: 5px;
+			padding: 5px 12px;
+			background-color: #eee;
+			border: 0;
+			box-shadow: none;
+			text-decoration: none;
+			border-radius: 4px;
+			color: #333;
+			transition: all .5s;
+			cursor: pointer;
+			box-shadow: 1px 2px 3px #8E8E8E, 1px 4px 10px #bbb;
+		}
+		.btn:hover {  }
+
+		.btn.btn-a { 
+			background-color: #172198; color: #fff;
+			box-shadow: 0px 1px 2px #12176A, 1px 2px 5px #4048A7; }
+		.btn-a:hover { 
+			background-color: #3440D3;
+			box-shadow: 1px 2px 3px #12176A, 1px 3px 8px #4048A7;
+		}
+		.btn.btn-b { 
+			background-color: #128E24; color: #fff; 
+		}
+		.btn-b:hover { 
+			background-color: #2EB23E;
+			box-shadow: 1px 2px 3px #0D5D17, 1px 4px 10px #39A046;
+		}
+		.btn.btn-c { 
+			background-color: #CE3629; 
+			color: #fff; 
+		}
+		.btn-c:hover { 
+			background-color: #E55246;
+			box-shadow: 1px 2px 3px #8E241C, 1px 4px 10px #B2554D;
+		}
+		.page {
+			margin: 20px 0 50px 20px; padding: 10px; width: 1000px; border: 1px solid #999;
+		}
+		.page h2 {
+			padding-bottom: 20px;
+		}
+		.dash-line { width: 95%; height: 0; margin: 10px 0; border-top: 1px dashed #aaa; }
+		.pb15 { padding-bottom: 15px; }
+	</style>
+</head>
+
+<body>
+
+	<article id="codeDetail">
+		<h1>统计代码部署；</h1>
+		<h3>1.在页面上引入JS文件</h3>
+		<p>
+			<code>(function(i,s,o,g,r,a,m){i['analyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)};i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window, document, 'script', 'lib/ma.js', '_ma');</code>
+		</p>
+		<h3>2.添加自定义参数字段。（海报id、广告id、海报名称、描述字段等）</h3>
+		<p>
+			// _ma('create', key, value, description);<br>
+			// "create" - 关键字，表示创建参数字段 <br>
+			// key - 字段名<br>
+			// value - 参数值<br>
+			// description - 描述字段，（暂不采集）<br>
+			// e.g _ma('create', 'aid', '1584236', '广告id');<br>
+		</p>
+		<h3>3.添加统计事件（发送）</h3>
+		<p>
+			// _ma('send', type, data);<br>
+			// "send" - 关键字，发送请求<br>
+			// type - 类型。参数类型："PosterVisit","MaterialVisit","pageClick"<br>
+			// data - 额外参数{array} ([[key, value], [key, value],....]) ,仅当次事件有效<br>
+			// e.g<br>
+			// _ma("send", "PosterVisit", [["open_time", (new Date()).getTime()], ["location", "beijing"]]);<br>
+			// ***特殊的是：<br>
+			// 页面开始统计点击事件。并在点击之后发送点击坐标到后台<br>
+			// _ma('send', 'pageclick', send_key);<br>
+			// send_key - 页面点击事件，事件名<br>
+			// 点击坐标参数固定为: “cc”。<br>
+			// e.g: <br>
+			// &nbsp;&nbsp;&nbsp;&nbsp; 海报点击事件 _ma('send', 'pageclick', 'PosterClick');<br>
+		</p>
+		<h3>4.特殊事件统计（按钮点击、视频播放、用户注册（登录）、文件下载等）</h3>
+		<p>
+			//_ma('trackEvent', category, action, description, extraArr);<br>
+			// 'trackEvent' - 关键字，标识特殊事件 <br>
+			// category {String} - 要监控的目标的类型名称，通常是同一组目标的名字，比如”视频”、”音乐”、”软件”、”游戏”等等。该项必选。<br>
+			// action - 用户跟目标交互的行为，如”播放”、”暂停”、”下载”等等。该项必选。<br>
+			// description {String} - 事件的一些额外信息，通常可以是歌曲的名称、软件的名称、链接的名称等等。该项可选。<br>
+			// extraArr {Array} -为当前发送统计的请求添加自定义字段，比如描述，时间，备注等。数组格式为二维数组，如： [[key1,value1],[key2,value2],.....]。该项可选。<br>
+			// 事件触发后会向后台发送数据，发送字段参数：<br>
+			&nbsp;&nbsp;cat: category, <br>
+			&nbsp;&nbsp;act: action, <br>
+			&nbsp;&nbsp;des: description,<br>
+		</p>
+		<h3>4.其他</h3>
+		<p>
+			// 删除字段，删除后不再向后台发送该字段（仅能用于删除自定义参数）<br>
+			// 例如： <br>
+			// _ma('create', 'aid', '123456');<br>
+			// _ma('create', 'pid', '456789');<br>
+			// ....<br>
+			// ....<br>
+			// _ma('clear', ['aid', 'pid']); <br>
+		</p>
+		<p>注：页面事件类型（ea）: PosterVisit（海报展示）, MaterialVisit（素材展示）, PosterClick（海报点击）, MaterialClick（素材点击）, Track（特殊事件统计）, UserRegister（注册事件）, UserLogin（登陆事件）</p>
+	</article>
+
+	<div class="page">
+		<h2>素材统计测试页面地址：</h2>
+		<a href="./material.html" class="btn btn-b">点击前往</a>
+		<p class="dash-line"></p>
+		<h2>海报统计测试页面地址：</h2>
+		<a href="./poster.html" class="btn btn-b">点击前往</a>
+		<h2>移动端统计测试页面地址：</h2>
+		<a href="./phone.html" class="btn btn-b">点击前往</a>
+	</div>
+
+	<div class="page">
+		<form action="" method="post" id="loginForm">
+			<h2>表单登陆</h2>
+			<div class="form-group">
+				<label>name</label>
+				<input type="text" name="username" class="username">
+			</div><br>
+			<div class="form-group">
+				<label>pass</label>
+				<input type="password" name="password" class="password">
+			</div><br>
+			<div class="form-group">
+				<input type="submit" value="输入用户名点击登陆" class="subForm btn btn-b">
+			</div>
+		</form>
+		<p class="dash-line"></p>
+		<form action="" method="post" id="regForm">
+			<h2>表单注册</h2>
+			<div class="form-group">
+				<label>name</label>
+				<input type="text" name="username" class="username">
+			</div><br>
+			<div class="form-group">
+				<label>pass</label>
+				<input type="password" name="password" class="password">
+			</div><br>
+			<div class="form-group">
+				<input type="submit" value="输入用户名点击注册" class="subForm btn btn-b">
+			</div>
+		</form>
+		<p class="dash-line"></p>
+		<div>
+			<h2>事件开关</h2>
+			<p>
+				发送一条页面展示统计请求：<br>
+				<a href="javascript:;" class="btn btn-a" onclick="_ma('send', 'PosterVisit');">点击发送展示统计</a>
+			</p>
+			<p class="pb15">
+				<code>_ma('send', 'PosterVisit');</code>
+			</p>
+			<p>
+				开始统计页面点击事件：<br>
+				<a href="javascript:;" class="btn btn-a" onclick="_ma('send', 'pageclick', 'PosterClick');">点击开始统计点击事件</a>
+			</p>
+			<p class="pb15">
+				<code>_ma('send', 'pageclick', 'PosterClick');</code>
+			</p>
+		</div>
+		<div>
+			<h2>监控指定事件</h2>
+			<p>
+			track事件： <br>
+				<a class="btn btn-a" href="javascript:;" id="testClick" onclick="_ma('trackEvent', 'gameFile', 'download', '', [['filesize','100MB'],['channel_id','1552'],['game_name', 'mfwz']]);">点击统计游戏下载事件</a>
+			</p>
+			<p class="pb15">
+				<code> onclick="_ma('trackEvent', 'gameFile', 'download', [['filesize','100MB'],['channel_id','1552'],['game_name', 'mfwz']]);"</code>
+			</p>
+			<p>
+				send事件：<br>
+				<a class="btn btn-a" href="javascript:;" onclick='_ma("send", "PosterClick", [["cc", "1x1"]])'>点击发送点击统计</a>
+			</p>
+			<p class="pb15">
+				<code>onclick='_ma("send", "PosterClick", [["cc", "1x1"]])'</code>
+			</p>
+		</div>
+	</div>
+
+	<!-- <script type="text/javascript">
+		window["analyticsObject"] = "_ma";
+		window["_ma"] = window["_ma"] || function(){
+			(window["_ma"].q = window["_ma"].q || []).push(arguments);
+			window["_ma"].l = 1 * new Date();
+		};
+	</script>
+	<script src="lib/ma.js"></script> -->
+
+	<script type="text/javascript">
+		(function(i,s,o,g,r,a,m){i['analyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)};i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window, document, 'script', 'lib/ma.js', '_ma');
+		_ma('create', 'chid', '1005', '字段1');
+		_ma('create', 'aid', '6547', '字段2');
+		_ma('create', 'at', 'flash', '字段3');
+		_ma('create', 'pid', '4563', '字段4');
+		_ma('create', 'mid', '1256', '字段5');
+		_ma('create', 'mn', '3', '字段5');
+		_ma('create', 'sn', 'youku.com', '来源域名');
+		_ma('create', 'fid', '2567', '字段5');
+		// _ma('send', 'PosterVisit');
+		// _ma('send', 'pageclick', 'PosterClick');
+		// _ma('clear', ['aid', 'pid']); 
+	</script>
+	<script type="text/javascript">
+		Qui.use("jquery", function($){
+			var $loginForm = $("#loginForm");
+			$loginForm.on("submit", function(){
+				var username = $(".username", $loginForm).val();
+
+				/*
+				* ...
+				* ...
+				* ...
+				* 登陆成功
+				*/
+
+				/* 发送统计信息 */
+				_ma("send", "UserLogin", [["username", username],["login_time", (new Date()).getTime()], ["location", "beijing"]]);
+
+				return false;
+			});
+
+			var $regForm = $("#regForm");
+			$regForm.on("submit", function(){
+				var username = $(".username", $regForm).val();
+
+				/*
+				* ...
+				* ...
+				* ...
+				* 登陆成功
+				*/
+
+				/* 发送统计信息 */
+				_ma("send", "UserRegister", [["username", username],["reg_time", (new Date()).getTime()], ["location", "chengdu"]]);
+
+				return false;
+			});
+		});
+	</script>
+</body>
+</html>
+

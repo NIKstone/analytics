@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>hello world</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+	<script src="http://ui.xiyoucdn.com/qui.js"></script>
+</head>
+
+<body>
+
+	<div class="page" style="margin: 100px auto; border: 1px solid #999;">
+		<h1>this is h1 title</h1>
+		<p>this is p words</p>
+		<p>hello world</p>
+		<form action="" method="post" id="regForm">
+			<div class="form-group">
+				<label>name</label>
+				<input type="text" name="uname">
+			</div>
+			<div class="form-group">
+				<label>email</label>
+				<input type="email" name="email">
+			</div>
+			<div class="form-group">
+				<label>pass</label>
+				<input type="password" name="pass">
+			</div>
+			<div class="form-group">
+				<label>pass confirm</label>
+				<input type="password" name="pass2">
+			</div>
+			<div class="form-group">
+				<input type="submit" value="submit" id="subForm">
+			</div>
+		</form>
+		<div style="padding: 10px 0;">
+			<a href="javascript:void(0);" id="testClick">testClickBtn-->click.gif</a>
+		</div>
+	</div>
+</body>
+</html>
+
+<script type="text/javascript">
+	var _maq = _maq || [];
+	_maq.push(['chi', '123654']);
+	_maq.push(['aid', '56412']); 
+	_maq.push(['at', 'atype1']); 
+	_maq.push(['pi', '456987']); 
+	_maq.push(['fid', '5456']); 
+	_maq.push(['mi', '1254']); 
+	_maq.push(['mn', '5']); 
+	 
+	(function() {
+	    var s = document.getElementsByTagName('head')[0];
+	    var _emptyScript = document.createElement("script");
+	    s.appendChild(_emptyScript);
+	    var ma = document.createElement('script'); ma.type = 'text/javascript'; ma.async = 1;
+	    ma.src = "js/ma.min.js";
+	    s.insertBefore(ma, document.getElementsByTagName("script")[0]);
+	    s.removeChild(_emptyScript);
+	})();
+</script>
+
+<script type="text/javascript">
+
+	// Qui.use('jquery',function($){
+	// 	$("#subForm").live('click',function(event){
+	// 		event.preventDefault();
+	// 		var data = $("#regForm").serialize();
+	// 		$.post('data/regist.data',data,function(resp){
+
+	// 			//type can only be 'register' and 'login'.
+	// 			_maq.push(["uid",$("input[name='name']").val()]);
+	// 			_maq.push(["channel", "123456"]);
+	// 			ma.track("register");
+
+	// 		},'json').error(function(e){
+	// 			_maq.push(["err","fail to register"]);
+	// 			ma.track("register");
+	// 		});
+	// 	});
+	// });
+</script>
+
+
