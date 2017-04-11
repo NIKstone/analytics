@@ -3,7 +3,7 @@
 #### 数据采集，采集页面上用户的操作，参考Google analytics以及百度统计的方式，页面自定义参数及事件。使用的是带锚点的方式采集。
 统计代码部署；
 ## 1.在页面上引入JS文件
-###(function(i,s,o,g,r,a,m){i['analyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)};i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window, document, 'script', 'lib/ma.js', '_ma');
+#### (function(i,s,o,g,r,a,m){i['analyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)};i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window, document, 'script', 'lib/ma.js', '_ma');
 ## 2.添加自定义参数字段。（海报id、广告id、海报名称、描述字段等）
 ### _ma('create', key, value, description);
 #### "create" - 关键字，表示创建参数字段 
@@ -18,7 +18,7 @@
 #### data - 额外参数{array} ([[key, value], [key, value],....]) ,仅当次事件有效
 #### e.g
 #### _ma("send", "PosterVisit", [["open_time", (new Date()).getTime()], ["location", "beijing"]]);
-## ***特殊的是：
+### ***特殊的是：
 #### 页面开始统计点击事件。并在点击之后发送点击坐标到后台
 ### _ma('send', 'pageclick', send_key);
 #### send_key - 页面点击事件，事件名
