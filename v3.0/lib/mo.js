@@ -28,13 +28,14 @@
 							var pair = vars[i].split("=");
 							try {
 								var name = decodeURIComponent(pair[0]);
-								var value = (pair.length > 1) ? decodeURIComponent(pair[1]) : "true";
+								var value = (pair.length > 1) ? decodeURIComponent(pair[1]) : "";
 								paris[name] = value;
 							} catch (e) {}
 						}
 					}
 				}
 			}
+			return paris;
 		},
 		unParseQueryString: function(qs){
 			var params = [], k, v;
@@ -77,7 +78,7 @@
 					"//" + 
 					(url.host || "") +
 					(url.pathname || "") +
-					url.unParseQueryString(url.query) +
+					Util.unParseQueryString(url.query) +
 					(url.hash || "");
 		},
 		isString: function(str){
@@ -195,7 +196,7 @@
 		title: document.title || "",
 		pwu: window.parent.document.URL || "", 
 		pwt: window.parent.document.title || "",
-		ref: document.referrer && Util.parseUrl(document.referrer).hostname || "",
+		ref: document.referrer || "",
 		hostname: document.location && document.location.hostname || "",
 		getUrlData: function(){
 			var l = document.location;
@@ -217,12 +218,22 @@
 		screen_height: 0,
 		screen_colors: "0-bit",
 		language: "other",
+		gpu_vender: "",
+		gpu_renderer: "",
 		getDevice: function(){
 			if (window && window.screen) {
 				this.screen_height = window.screen.height || 0;
 				this.screen_width = window.screen.width || 0;
 
 				this.screen_colors = ( window.screen.colorDepth || 0 ) + '-bit';
+			}
+
+			var canvas = document.createElement("canvas");
+			var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+			if(gl){
+				var debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
+				this.gpu_renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || ""; // 显卡渲染器
+				this.gpu_vender = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);   // 显卡供应商
 			}
 		},
 		getInfo: function(){
@@ -840,7 +851,10 @@
 			"osv": system.version.alias || system.version.original || system.version, //操作系统版本
 			"brn": browser.type, //浏览器类型（chrome、ie、safri、opera、Firefox）
 			"brv": browser.version, //浏览器版本号
-			"sr": system.screen_width + "x" + system.screen_height	//系统分辨率
+			"gr": system.gpu_renderer, // GPU渲染器
+			"gv": system.gpu_vender, // GPU供应商
+			"sr": system.screen_width + "x" + system.screen_height,	//系统分辨率
+			"rr": Util.unParseUrl(Util.parseUrl(web.ref))
 		},
 		commonParams: {
 			
