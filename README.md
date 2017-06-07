@@ -1,5 +1,5 @@
 # analytics
-#### By NIKstone
+#### By stoneNIK
 #### 数据采集，采集页面上用户的操作，参考Google analytics以及百度统计的方式，页面自定义参数及事件。使用的是带锚点的方式采集。
 统计代码部署；
 ## 1.在页面上引入JS文件
