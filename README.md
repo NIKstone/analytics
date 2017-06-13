@@ -1,6 +1,6 @@
 # analytics
-#### By NIKstone
-#### 数据采集，采集页面上用户的操作，参考Google analytics以及百度统计的方式，页面自定义参数及事件。使用的是带锚点的方式采集。
+#### By stoneNIK
+#### 数据采集，采集页面上用户的操作，参考Google analytics以及百度统计的方式，页面自定义参数及事件。使用的是锚点的方式采集。
 统计代码部署；
 ## 1.在页面上引入JS文件
 #### (function(i,s,o,g,r,a,m){i['analyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)};i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window, document, 'script', 'lib/ma.js', '_ma');
