@@ -7,7 +7,7 @@
 	if(window.hasMo) return;
 	var ua = navigator.userAgent;
 	var platform = navigator.platform;
-	var xiyou_analytics_domain = "https:" == document.location.protocol ? "https://track.xiyouence.com/" : "http://track.xiyouence.com/",
+	var xiyou_analytics_domain = "https:" == document.location.protocol ? "https://analytics.51xiyou.com/" : "http://analytics.51xiyou.com/",
         xiyou_analytics_path = xiyou_analytics_domain + "mo.gif";
     var emptyFunction = function(){};
 	window.console = window.console || (function() {
@@ -29,7 +29,7 @@
 							try {
 								var name = decodeURIComponent(pair[0]);
 								var value = (pair.length > 1) ? decodeURIComponent(pair[1]) : "";
-								paris[name] = value;
+								(pair.length > 1) && (paris[name] = value);
 							} catch (e) {}
 						}
 					}
@@ -194,8 +194,6 @@
 		domain: document.domain || "",
 		url: document.URL || "",
 		title: document.title || "",
-		pwu: window.parent.document.URL || "", 
-		pwt: window.parent.document.title || "",
 		ref: document.referrer || "",
 		hostname: document.location && document.location.hostname || "",
 		getUrlData: function(){
@@ -228,13 +226,15 @@
 				this.screen_colors = ( window.screen.colorDepth || 0 ) + '-bit';
 			}
 
-			var canvas = document.createElement("canvas");
-			var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-			if(gl){
-				var debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
-				this.gpu_renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || ""; // 显卡渲染器
-				this.gpu_vender = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);   // 显卡供应商
-			}
+			try{
+				var canvas = document.createElement("canvas");
+				var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+				if(gl){
+					var debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
+					this.gpu_renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || ""; // 显卡渲染器
+					this.gpu_vender = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) || "";   // 显卡供应商
+				}
+			}catch(e){}
 		},
 		getInfo: function(){
 			//平台、设备和操作系统
@@ -264,12 +264,12 @@
 				oThis.type = 'Unix';
 			}
 			if (ua_lower.match('freebsd')) {
-                oThis.type = 'freebsd';
+                oThis.type = 'Freebsd';
             }
-            if (ua.match('OpenBSD')) {
+            if (ua.match('openBSD')) {
                 oThis.type = 'OpenBSD';
             }
-            if (ua.match('NetBSD')) {
+            if (ua.match('netBSD')) {
                 oThis.type = 'NetBSD';
             }
             if (ua.match('SunOS')) {
@@ -309,7 +309,7 @@
                 }
 
                 if (ua.match('Mandriva Linux')) {
-                    oThis.type = 'Mandriva';
+                    oThis.type = 'mandriva';
                     if (match = /Mandriva Linux\/[0-9\.\-]+mdv([0-9]+)/.exec(ua)) {
                         oThis.version = new Version({
                             value: match[1]
@@ -847,14 +847,15 @@
 		startTime: (new Date()).getTime(),
 		params: {
 			"ic": "pageview",	//事件类型
-			"osn": system.type, // 操作系统类型（mac、windows、ios、linux、Android）
+			"osn": system.type.toLowerCase(), // 操作系统类型（mac、windows、ios、linux、Android）
 			"osv": system.version.alias || system.version.original || system.version, //操作系统版本
 			"brn": browser.type, //浏览器类型（chrome、ie、safri、opera、Firefox）
 			"brv": browser.version, //浏览器版本号
 			"gr": system.gpu_renderer, // GPU渲染器
 			"gv": system.gpu_vender, // GPU供应商
 			"sr": system.screen_width + "x" + system.screen_height,	//系统分辨率
-			"rr": Util.unParseUrl(Util.parseUrl(web.ref))
+			"rr": Util.unParseUrl(Util.parseUrl(web.ref)),
+			"mn": "1"
 		},
 		commonParams: {
 			
@@ -909,6 +910,10 @@
 			var sendArray = ["materialvisit", "postervisit", "mapostervisit", "mopostervisit"];
 			return sendArray.indexOf(type.toLowerCase()) > -1;
 		},
+		getNow: function(){
+			var _date = new Date();
+			return e = Math.floor(_data.getTime() / 1e3);
+		},
 		/*发送统计请求
 		* @param param { Array } 参数数组 [[key, value], [key, value]],自定义参数上传，仅当次有效
 		*/
@@ -926,7 +931,7 @@
 				var commonParams = oThis.commonParams;
 				arr_req = oThis.objToArray(commonParams, arr_req);
 			}else {
-				arr_req.push("_tt="+(new Date()).getTime());
+				arr_req.push("_tt="+oThis.getNow());
 			}
 
 			//额外参数拼接
@@ -953,10 +958,10 @@
 
 			//通过Image对象请求后端脚本
 			var ajax = new Ajax();
-			ajaxImg("//down.xiyouence.com/index/statisticstmp?type=3&opt1=send_before&paid="+(params["paid"] || "")+"&opt2="+(params["ic"] || ""));
+			
 			ajax.send(xiyou_analytics_path, str_req, function(){
 				//发送成功后回调函数
-				ajaxImg("//down.xiyouence.com/index/statisticstmp?type=4&opt1=send_after&paid="+(params["paid"] || "")+"&opt2="+(params["ic"] || ""));
+				
 			}, false);
 		}
 	};
