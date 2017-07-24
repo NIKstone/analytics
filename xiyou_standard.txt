@@ -1,0 +1,133 @@
+1.所有JS，css 代码必须压缩。
+
+2.有关统计的代码，每一句末尾必须用“;”作为结束，包括“function(){...};”；
+
+3.考虑到移动端网络的问题，尽量不使用Jquery等JS库，如果需要，最好通过cdn缓存降低 加载失败的几率。建议将常用引入的第三方库，如jQuery等，可以将文件名换成其他的文件名（e.g： hash12345.js），防止浏览器拦截或着劫持，导致页面报错。
+
+4.未知报错尽量处理，不要用try--catch,因为try-catch对JS性能有影响，如果实在未知兼容性又需要做处理，在关键部位使用try-catch.
+
+5.不同的功能代码分别用不同的script包起来，不要全部放在一个script里面，经测试，如果有报错，当前script的代码会阻塞执行。
+
+6.head代码通用：
+<meta charset="UTF-8">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+<meta name ="viewport" content ="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+
+7.页面head里面或着所有JS代码（包括外链）之前，添加报错监测代码：
+参考了天猫的JS—Tracker，如果有需要，建议开发一个通用报错的插件，可以在任何需要监测的页面使用。但需要注意的是，如果tracker.js和当前页面跨越，那么捕获到的错误信息在chrome内核浏览器由于安全机制，它会被截取转换成一个固定的错误信息：“script error”，那我们拿到的错误信息就没有检测价值了。期待大神提出解决方案。
+<script type="text/javascript">
+        var PACKAGE_ID = "<{$packageInfo.id}>";
+        
+        window.onerror = function(message, source, lineno, colno, error){
+            var string = message.toLowerCase();
+            var substring = "script error";
+            if (string.indexOf(substring) > -1){
+                sendError("error=script_error");
+            } else {
+                sendError("msg="+message+"&src="+encodeURIComponent(source)+"&line="+lineno+"&col="+colno+"&err="+error);
+            }
+            return false;
+        };
+
+        function sendError(_str){
+            var win = window;
+            var n = 'jsFeImage_' + _make_rnd(),
+            img = win[n] = new Image();
+            img.onload = img.onerror = function () {
+               win[n] = null;
+            };
+            img.src = "//down.xiyouence.com/error/report?"+_str+"&paid="+PACKAGE_ID;
+        };
+
+        var _make_rnd  = function(){
+            return (+new Date()) + '.r' + Math.floor(Math.random() * 1000);
+        };
+</script>
+
+8.兼容线上版本和线下测试版本，在body内部最后添加区分代码及一个通用代码（统计到mysql使用new image方式）：
+<script type="text/javascript">
+      var isOnline = '<{$online}>';
+</script>
+
+function ajaxImg(_url){
+      var _img = new Image(1,1);
+      _img.onload = _img.onerror = function(){
+           _img = null;
+      };
+      _img.src = _url;
+};
+
+9. 添加统计代码
+<script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['analyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)};i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window, document, 'script', '<{$ui_cdn}>/analytics/xy_analytics_m.js', '_ma');
+        _ma('create', 'chid', '<{$packageInfo.channel_id}>', '渠道ID');
+        _ma('create', 'apid', '<{$packageInfo.app_id}>', 'APPID');
+        _ma('create', 'gcid', '<{$packageInfo.game_channel_id}>', '子渠道ID');
+        _ma('create', 'aid', '<{$packageInfo.ad_id}>', '广告ID');
+        _ma('create', 'paid', '<{$packageInfo.id}>', '包ID');
+        _ma('create', 'mid', '<{$packageInfo.material_id}>', '素材ID');
+        _ma('create', 'mn', '<{$packageInfo.material_number}>', '素材序号'); //新增项
+        _ma('create', 'tid', '<{$packageInfo.template_id}>', '模板ID');
+	
+	// 页面展示统计
+        if(isOnline === "true"){
+            _ma('send', 'PosterVisit');
+            window.onload = function(){
+                ajaxImg("<{$template_display_api}>");
+            };
+        }
+</script>
+
+10。添加统计事件
+
+<script type="text/javascript">
+        if(isOnline === "true"){
+            // getElementsByClassName 兼容IE9+，
+            // 如果页面上下载链接较少，可直接用getElementById选择。
+            var links = document.getElementsByClassName("down-btn");
+            for(var i = 0; _link = links[i]; i++){
+                _link.onclick = function(){
+                    //统计到mysql 
+                    ajaxImg("<{$template_click_api}>");
+                    //统计到hadoop
+                    _ma('trackEvent', 'App', 'Download');
+                }
+            }
+        }
+</script>
+
+11.移动端屏幕适配，参考了天猫的兼容处理，能兼容所有设备的方法。也可以使用其他的兼容方式。
+<script type="text/javascript">
+        function pageResize(){
+            var font_size = document.body.clientWidth * 100 / 640;
+            document.documentElement.style.fontSize = font_size + "px";
+        };
+        window.onresize = function(){
+            pageResize();
+        };
+        pageResize();
+</script>
+注：640是设计图的尺寸，可更改，在写css时，所有长度单位均使用rem，比如在设计图上的一个元素为100px * 100px.写css的时候就这么使用：“width:1rem; height:1rem;”避免了单位换算和计算百分比。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
