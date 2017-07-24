@@ -264,7 +264,7 @@
 		title: document.title || "",
 		pwu: window.parent.document.URL || "", 
 		pwt: window.parent.document.title || "",
-		ref: document.referrer && Util.parseUrl(document.referrer).hostname || "",
+		ref: Util.getQueryString("ref") || ( document.referrer && Util.parseUrl(document.referrer).hostname) || "",
 		hostname: document.location && document.location.hostname || "",
 		getUrlData: function(){
 			var l = document.location;

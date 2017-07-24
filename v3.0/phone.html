@@ -13,6 +13,39 @@
     	.page { padding: 5% 10%; line-height: 2; font-size: 1.2em; word-break: break-all; }
     	.box { padding: 10px 0; text-align: center; }
     </style>
+    <script type="text/javascript">
+
+        var PACKAGE_ID = "2716";
+        
+        window.onerror = function(message, source, lineno, colno, error){
+            var string = message.toLowerCase();
+            var substring = "script error";
+            if (string.indexOf(substring) > -1){
+                sendError("error=script_error");
+            } else {
+                sendError("msg="+message+"&src="+encodeURIComponent(source)+"&line="+lineno+"&col="+colno+"&err="+error);
+            }
+            return false;
+        };
+
+        function sendError(_str){
+            var win = window;
+            var n = 'jsFeImage_' + _make_rnd(),
+            img = win[n] = new Image();
+            img.onload = img.onerror = function () {
+                win[n] = null;
+            };
+            img.src = "//192.168.2.32:8888?"+_str+"&paid="+PACKAGE_ID;
+        };
+
+        var _make_rnd  = function(){
+            return (+new Date()) + '.r' + Math.floor(Math.random() * 1000);
+        };
+    </script>
+
+    <script>
+        alert(navigator.userAgent);
+    </script>
     <script src="http://ui.xiyoucdn.com/qui.js"></script>
 </head>
 <body>
@@ -29,13 +62,12 @@
 	</p>
 	<br><br><br>
 	<p class="box">
-		<a href="javascript:;" onclick="_hmt.push(['_trackPageview', '/virtual/login']);">百度统计按钮</a>
+		
 	</p>
-	<br><br><br>
-	<div id="linkStr" class="page"></div>
 	<br><br><br>
 
 	<script type="text/javascript">
+
 		(function(i,s,o,g,r,a,m){i['analyticsObject']=r;i[r]=i[r]||function(){
 			(i[r].q=i[r].q||[]).push(arguments)};i[r].l=1*new Date();a=s.createElement(o),
 			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -48,6 +80,7 @@
 		_ma('create', 'mid', '1256', '字段5');
 		_ma('create', 'mn', '1256', '字段5');
 		_ma('create', 'tid', '456', '字段5');
+
 	</script>
 </body>
 </html>

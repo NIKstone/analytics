@@ -152,6 +152,7 @@
 				} else {
 					//近似地确定版本号
 					var safariVersion = 1;
+					var engine = engine || "";
 					if (engine.webkit < 100) {
 						safariVersion = 1;
 					} else if (engine.webkit < 312) {
@@ -194,7 +195,7 @@
 		domain: document.domain || "",
 		url: document.URL || "",
 		title: document.title || "",
-		ref: document.referrer || "",
+		ref: Util.getQueryString("ref") || document.referrer || "",
 		hostname: document.location && document.location.hostname || "",
 		getUrlData: function(){
 			var l = document.location;
@@ -911,8 +912,7 @@
 			return sendArray.indexOf(type.toLowerCase()) > -1;
 		},
 		getNow: function(){
-			var _date = new Date();
-			return e = Math.floor(_data.getTime() / 1e3);
+			return Math.floor(new Date().getTime() / 1e3);
 		},
 		/*发送统计请求
 		* @param param { Array } 参数数组 [[key, value], [key, value]],自定义参数上传，仅当次有效
@@ -931,7 +931,7 @@
 				var commonParams = oThis.commonParams;
 				arr_req = oThis.objToArray(commonParams, arr_req);
 			}else {
-				arr_req.push("_tt="+oThis.getNow());
+				arr_req.push("_tt=" + oThis.getNow());
 			}
 
 			//额外参数拼接
@@ -1052,18 +1052,22 @@
 
 			//页面点击事件统计
 			pageClick = function(_sendType){
-				if(window.addEventListener){
-					window.addEventListener('click', function(e){
-						var _clientX = e.clientX || 0,
-							_clientY = e.clientY || 0;
-						ma.onPageClick(_sendType, _clientX + "" + "x" + _clientY + "");
-					});
-				}else if(document.attachEvent){
-					document.attachEvent('onclick', function (e) {
-						var _clientX = e.clientX || 0;
-						var _clientY = e.clientY || 0;
-						ma.onPageClick(_sendType, _clientX + "" + "x" + _clientY + "");
-					});
+				try {//兼容 Error: Point (674.1049120668322, 422.6384164392948) is outside the document
+					if(window.addEventListener){
+						window.addEventListener('click', function(e){
+							var _clientX = e.clientX || 0,
+								_clientY = e.clientY || 0;
+							ma.onPageClick(_sendType, _clientX + "" + "x" + _clientY + "");
+						});
+					}else if(document.attachEvent){
+						document.attachEvent('onclick', function (e) {
+							var _clientX = e.clientX || 0;
+							var _clientY = e.clientY || 0;
+							ma.onPageClick(_sendType, _clientX + "" + "x" + _clientY + "");
+						});
+					}
+				} catch (e){
+
 				}
 			};
 		};
