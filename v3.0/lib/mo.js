@@ -16,6 +16,31 @@
 	    return c;
 	})();
 
+	window.onerror = function(message, source, lineno, colno, error){
+        var string = message.toLowerCase();
+        var substring = "script error";
+        if (string.indexOf(substring) > -1){
+            sendError("error=script_error");
+        } else {
+            sendError("msg="+message+"&src="+encodeURIComponent(source)+"&line="+lineno+"&col="+colno+"&err="+error);
+        }
+        return false;
+    };
+
+    function sendError(_str){
+        var win = window;
+        var n = 'jsFeImage_' + _make_rnd(),
+        img = win[n] = new Image();
+        img.onload = img.onerror = function () {
+            win[n] = null;
+        };
+        img.src = "//down.xiyouence.com/error/report?"+_str+"&url="+encodeURIComponent(window.location.href);
+    };
+
+    var _make_rnd  = function(){
+        return (+new Date()) + '.r' + Math.floor(Math.random() * 1000);
+    };
+
 	var Util = {
 		parseQueryString: function(qs){
 			var paris = {};
