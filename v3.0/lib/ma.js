@@ -17,6 +17,25 @@
 	    return c;
 	})();
 
+	if (!Array.prototype.indexOf) {
+	    Array.prototype.indexOf = function(ele) {
+	        var len = this.length;
+	        var fromIndex = Number(arguments[1]) || 0;
+	        if(fromIndex < 0) {
+	            fromIndex += len;
+	        }
+	        while(fromIndex < len) {
+	            if(fromIndex in this && this[fromIndex] === ele) {
+	                return fromIndex;
+	            }
+	            fromIndex++;
+	        }
+	        if (len === 0) {
+	            return -1;
+	        }
+	    }
+	}
+
 	var Util = {
 		parseQueryString: function(qs){
 			var paris = {};
@@ -907,7 +926,6 @@
 
 	var ma = {
 		startTime: (new Date()).getTime(),
-		isPC: ["mac", "windows", "linux"].indexOf(system.type) > -1,
 		params: {
 			"ic": "pageview",	//事件类型
 			"i3p": flash.fancy3d ? "1" : "0", //是否安装fancy3d插件

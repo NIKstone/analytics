@@ -16,30 +16,24 @@
 	    return c;
 	})();
 
-	window.onerror = function(message, source, lineno, colno, error){
-        var string = message.toLowerCase();
-        var substring = "script error";
-        if (string.indexOf(substring) > -1){
-            sendError("error=script_error");
-        } else {
-            sendError("msg="+message+"&src="+encodeURIComponent(source)+"&line="+lineno+"&col="+colno+"&err="+error);
-        }
-        return false;
-    };
-
-    function sendError(_str){
-        var win = window;
-        var n = 'jsFeImage_' + _make_rnd(),
-        img = win[n] = new Image();
-        img.onload = img.onerror = function () {
-            win[n] = null;
-        };
-        img.src = "//down.xiyouence.com/error/report?"+_str+"&url="+encodeURIComponent(window.location.href);
-    };
-
-    var _make_rnd  = function(){
-        return (+new Date()) + '.r' + Math.floor(Math.random() * 1000);
-    };
+	if (!Array.prototype.indexOf) {
+	    Array.prototype.indexOf = function(ele) {
+	        var len = this.length;
+	        var fromIndex = Number(arguments[1]) || 0;
+	        if(fromIndex < 0) {
+	            fromIndex += len;
+	        }
+	        while(fromIndex < len) {
+	            if(fromIndex in this && this[fromIndex] === ele) {
+	                return fromIndex;
+	            }
+	            fromIndex++;
+	        }
+	        if (len === 0) {
+	            return -1;
+	        }
+	    }
+	}
 
 	var Util = {
 		parseQueryString: function(qs){
@@ -820,13 +814,19 @@
         * @param callback {Function} 回调函数。
         */
         oThis.sendByImage = function(src, callback){
-            var image = new Image(1, 1);
-            image.onload = function(){
-                image = null;
+            var win = window;
+            var n = 'moImage_' + oThis.make_rnd(),
+            img = win[n] = new Image();
+            img.onload = img.onerror = function () {
+                win[n] = null;
                 (callback || emptyFunction)();
             };
-            image.src = src;
+            img.src = src;
         };
+
+        oThis.make_rnd = function(){
+        	return (+new Date()) + '.r' + Math.floor(Math.random() * 1000);
+        }; 
 
         /**
         * 根据情况使用XMLHttpRequest或iframe对象发出请求。
@@ -973,19 +973,11 @@
 
 			var str_req = arr_req.join("&");
 
-			function ajaxImg(_src){
-				var _img = new Image(1,1);
-				_img.onload = function(){
-					_img = null;
-				};
-				_img.src = _src || "";
-			};
-
 			//通过Image对象请求后端脚本
 			var ajax = new Ajax();
 			
 			ajax.send(xiyou_analytics_path, str_req, function(){
-				//发送成功后回调函数
+			// 	//发送成功后回调函数
 				
 			}, false);
 		}
@@ -1077,22 +1069,18 @@
 
 			//页面点击事件统计
 			pageClick = function(_sendType){
-				try {//兼容 Error: Point (674.1049120668322, 422.6384164392948) is outside the document
-					if(window.addEventListener){
-						window.addEventListener('click', function(e){
-							var _clientX = e.clientX || 0,
-								_clientY = e.clientY || 0;
-							ma.onPageClick(_sendType, _clientX + "" + "x" + _clientY + "");
-						});
-					}else if(document.attachEvent){
-						document.attachEvent('onclick', function (e) {
-							var _clientX = e.clientX || 0;
-							var _clientY = e.clientY || 0;
-							ma.onPageClick(_sendType, _clientX + "" + "x" + _clientY + "");
-						});
-					}
-				} catch (e){
-
+				if(window.addEventListener){
+					window.addEventListener('click', function(e){
+						var _clientX = e.clientX || 0,
+							_clientY = e.clientY || 0;
+						ma.onPageClick(_sendType, _clientX + "" + "x" + _clientY + "");
+					});
+				}else if(document.attachEvent){
+					document.attachEvent('onclick', function (e) {
+						var _clientX = e.clientX || 0;
+						var _clientY = e.clientY || 0;
+						ma.onPageClick(_sendType, _clientX + "" + "x" + _clientY + "");
+					});
 				}
 			};
 		};
