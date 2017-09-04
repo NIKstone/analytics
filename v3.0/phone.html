@@ -15,8 +15,31 @@
     </style>
     <script type="text/javascript">
         
+        var PACKAGE_ID = "<{$packageInfo.isOnline}>";
         window.onerror = function(message, source, lineno, colno, error){
-            alert("error on page");
+            var string = message.toLowerCase();
+            var substring = "script error";
+            if (string.indexOf(substring) > -1){
+                sendError("error=script_error");
+            } else {
+                sendError("msg="+message+"&src="+encodeURIComponent(source)+"&line="+lineno+"&col="+colno+"&err="+error);
+            }
+            return false;
+        };
+
+        function sendError(_str){
+            alert(_str);
+            // var win = window;
+            // var n = 'jsFeImage_' + _make_rnd(),
+            // img = win[n] = new Image();
+            // img.onload = img.onerror = function () {
+            //    win[n] = null;
+            // };
+            // img.src = "//down.xiyouence.com/error/report?"+_str+"&paid="+PACKAGE_ID;
+        };
+
+        var _make_rnd  = function(){
+            return (+new Date()) + '.r' + Math.floor(Math.random() * 1000);
         };
     </script>
 
@@ -32,17 +55,13 @@
 	</p>
 	<br><br><br>
 	<p class="box">
-		<a href="javascript:;" onclick="_ma('trackEvent', 'Poster', 'test');">点击发送下载统计</a>
+		<a href="javascript:;" onclick="_ma('trackEvent', 'APP', 'download');">点击发送下载统计</a>
 	</p>
 	<br><br><br>
 	<p class="box">
-		
+		<a href="javascript:;" onclick="_ma('trackEvent', 'TemplateTrace', 'test', '测试事件')">点击发送特殊事件</a>
 	</p>
 	<br><br><br>
-
-    <script>
-        var isOnline = "true";
-    </script>
 
 	<script type="text/javascript">
 
@@ -54,17 +73,12 @@
 		_ma('create', 'apid', '105', '字段1');
 		_ma('create', 'gcid', '6547', '字段2');
 		_ma('create', 'aid', 'flash', '字段3');
-		_ma('create', 'paid', '4563', '字段4');
+		_ma('create', 'paid', '7896', '字段4');
 		_ma('create', 'mid', '1256', '字段5');
 		_ma('create', 'mn', '1256', '字段5');
 		_ma('create', 'tid', '456', '字段5');
 
 	</script>
 
-    <script>
-        if("true" === isOnline) {
-            // _ma('send', 'PosterVisit');
-        }
-    </script>
 </body>
 </html>

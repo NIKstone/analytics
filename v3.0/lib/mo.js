@@ -204,6 +204,10 @@
 				oThis.version = RegExp["$1"];
 				return;
 			}
+
+			if("douyu_android" == ua.toLowerCase()){
+				oThis.type = "douyuapp";
+			}
 		}
 	};
 
@@ -260,23 +264,6 @@
 			//平台、设备和操作系统
 			var oThis = this, ua_lower = ua.toLowerCase();
 
-			function parseVersion(version) {
-		        version = version.toString();
-		        var components = version.split('.');
-		        var major = components.shift();
-		        return parseFloat(major + '.' + components.join(''));
-		    };
-
-			var Version = function () {
-		        this.initialize.apply(this, Array.prototype.slice.call(arguments));
-		    };
-
-		    Version.prototype = {
-		        initialize: function (v) {
-		            this.original = v.value || null;
-		            this.alias = v.alias || null;  
-		        }
-		    };
 			/*
 			* Linux
 			*/
@@ -301,9 +288,7 @@
                 if (ua.match('CentOS')) {
                     oThis.type = 'CentOS';
                     if (match = /CentOS\/[0-9\.\-]+el([0-9_]+)/.exec(ua)) {
-                        oThis.version = new Version({
-                            value: match[1].replace(/_/g, '.')
-                        });
+                        oThis.version = match[1].replace(/_/g, '.');
                     }
                 }
 
@@ -314,9 +299,7 @@
                 if (ua.match('Fedora')) {
                     oThis.type = 'Fedora';
                     if (match = /Fedora\/[0-9\.\-]+fc([0-9]+)/.exec(ua)) {
-                        oThis.version = new Version({
-                            value: match[1]
-                        });
+                        oThis.version = match[1];
                     }
                 }
 
@@ -331,27 +314,21 @@
                 if (ua.match('Mandriva Linux')) {
                     oThis.type = 'mandriva';
                     if (match = /Mandriva Linux\/[0-9\.\-]+mdv([0-9]+)/.exec(ua)) {
-                        oThis.version = new Version({
-                            value: match[1]
-                        });
+                        oThis.version = match[1];
                     }
                 }
 
                 if (ua.match('Mageia')) {
                     oThis.type = 'Mageia';
                     if (match = /Mageia\/[0-9\.\-]+mga([0-9]+)/.exec(ua)) {
-                        oThis.version = new Version({
-                            value: match[1]
-                        });
+                        oThis.version = match[1];
                     }
                 }
 
                 if (ua.match('Red Hat')) {
                     oThis.type = 'Red Hat';
                     if (match = /Red Hat[^\/]*\/[0-9\.\-]+el([0-9_]+)/.exec(ua)) {
-                        oThis.version = new Version({
-                            value: match[1].replace(/_/g, '.')
-                        });
+                        oThis.version = match[1].replace(/_/g, '.');
                     }
                 }
 
@@ -370,140 +347,87 @@
                 if (ua.match('Ubuntu')) {
                     oThis.type = 'Ubuntu';
                     if (match = /Ubuntu\/([0-9.]*)/.exec(ua)) {
-                        oThis.version = new Version({
-                            value: match[1]
-                        });
+                        oThis.version = match[1];
                     }
                 }
             }
             if (ua.match('iPhone( Simulator)?;') || ua.match('iPad;') || ua.match('iPod;')) {
                 oThis.type = 'iOS';
-                oThis.version = new Version({
-                    value: '1.0'
-                });
+                oThis.version = '1.0';
 
                 if (match = /OS (.*) like Mac OS X/.exec(ua)) {
-                    oThis.version = new Version({
-                        value: match[1].replace(/_/g, '.')
-                    });
+                    oThis.version = match[1].replace(/_/g, '.');
                 }
 			} else if (ua.match('Mac OS X')) {
 
 				oThis.type = 'Mac OS X';
 
 				if (match = /Mac OS X (10[0-9\._]*)/.exec(ua)) {
-					oThis.version = new Version({
-						value: match[1].replace(/_/g, '.')
-					});
+					oThis.version = match[1].replace(/_/g, '.');
 				}
 			}
 
-			 /*
-             *      Windows
-             */
+			/*
+            *  Windows
+            */
 
             if (ua.match('Windows')) {
                 oThis.type = 'Windows';
 
                 if (match = /Windows NT ([0-9]\.[0-9])/.exec(ua)) {
-                    oThis.version = parseVersion(match[1]);
+                    oThis.version = match[1];
 
                     switch (match[1]) {
                     	case '10.0':
-                            oThis.version = new Version({
-                                value: match[1],
-                                alias: '10'
-                            });
+                            oThis.version = '10';
                             break;
                     	case '6.4':
-                            oThis.version = new Version({
-                                value: match[1],
-                                alias: '10'
-                            });
+                            oThis.version = '10';
                             break;
                     	case '6.3':
-                            oThis.version = new Version({
-                                value: match[1],
-                                alias: '8.1'
-                            });
+                            oThis.version = '8.1';
                             break;
                         case '6.2':
-                            oThis.version = new Version({
-                                value: match[1],
-                                alias: '8'
-                            });
+                            oThis.version = '8';
                             break;
                         case '6.1':
-                            oThis.version = new Version({
-                                value: match[1],
-                                alias: '7'
-                            });
+                            oThis.version = '7';
                             break;
                         case '6.0':
-                            oThis.version = new Version({
-                                value: match[1],
-                                alias: 'Vista'
-                            });
+                            oThis.version = 'Vista';
                             break;
                         case '5.2':
-                            oThis.version = new Version({
-                                value: match[1],
-                                alias: 'Server 2003'
-                            });
+                            oThis.version = 'Server 2003';
                             break;
                         case '5.1':
-                            oThis.version = new Version({
-                                value: match[1],
-                                alias: 'XP'
-                            });
+                            oThis.version = 'XP';
                             break;
                         case '5.0':
-                            oThis.version = new Version({
-                                value: match[1],
-                                alias: '2000'
-                            });
+                            oThis.version = '2000';
                             break;
                         default:
-                            oThis.version = new Version({
-                                value: match[1],
-                                alias: 'NT ' + oThis.version
-                            });
+                            oThis.version = 'NT ' + oThis.version;
                     }
                 }
                 if (ua.match('Windows 95') || ua.match('Win95') || ua.match('Win 9x 4.00')) {
-                    oThis.version = new Version({
-                        value: '4.0',
-                        alias: '95'
-                    });
+                    oThis.version = '95';
                 }
 
                 if (ua.match('Windows 98') || ua.match('Win98') || ua.match('Win 9x 4.10')) {
-                    oThis.version = new Version({
-                        value: '4.1',
-                        alias: '98'
-                    });
+                    oThis.version = '98';
                 }
 
                 if (ua.match('Windows ME') || ua.match('WinME') || ua.match('Win 9x 4.90')) {
-                    oThis.version = new Version({
-                        value: '4.9',
-                        alias: 'ME'
-                    });
+                    oThis.version = 'ME';
                 }
 
                 if (ua.match('Windows XP') || ua.match('WinXP')) {
-                    oThis.type = new Version({
-                        value: '5.1',
-                        alias: 'XP'
-                    });
+                    oThis.type = 'XP';
                 }
 
                 if (ua.match('WP7')) {
                     oThis.type = 'Windows Phone';
-                    oThis.version = new Version({
-                        value: '7.0',
-                        details: 2
-                    });
+                    oThis.version = '7.0';
                 }
 
                 if (ua.match('Windows CE') || ua.match('WinCE') || ua.match('WindowsCE')) {
@@ -511,40 +435,25 @@
                         oThis.type = 'Windows Mobile';
 
                         if (ua.match(' IEMobile 8')) {
-                            oThis.version = new Version({
-                                value: '6.5',
-                                details: 2
-                            });
+                            oThis.version = '6.5';
                         }
 
                         if (ua.match(' IEMobile 7')) {
-                            oThis.version = new Version({
-                                value: '6.1',
-                                details: 2
-                            });
+                            oThis.version = '6.1';
                         }
 
                         if (ua.match(' IEMobile 6')) {
-                            oThis.version = new Version({
-                                value: '6.0',
-                                details: 2
-                            });
+                            oThis.version = '6.0';
                         }
                     } else {
                         oThis.type = 'Windows CE';
 
                         if (match = /WindowsCEOS\/([0-9.]*)/.exec(ua)) {
-                            oThis.version = new Version({
-                                value: match[1],
-                                details: 2
-                            });
+                            oThis.version = match[1];
                         }
 
                         if (match = /Windows CE ([0-9.]*)/.exec(ua)) {
-                            oThis.version = new Version({
-                                value: match[1],
-                                details: 2
-                            });
+                            oThis.version = match[1];
                         }
                     }
                 }
@@ -555,26 +464,17 @@
 
                 if (match = /WindowsMobile\/([0-9.]*)/.exec(ua)) {
                     oThis.type = 'Windows Mobile';
-                    oThis.version = new Version({
-                        value: match[1],
-                        details: 2
-                    });
+                    oThis.version = match[1];
                 }
 
                 if (ua.match('Windows Phone')) {
                     oThis.type = 'Windows Mobile';
-                    oThis.version = new Version({
-                        value: ua.match(/Windows Phone ([0-9.]*)/)[1],
-                        details: 2
-                    });
+                    oThis.version = ua.match(/Windows Phone ([0-9.]*)/)[1];
                 }
 
                 if (ua.match('Windows Phone OS')) {
                     oThis.type = 'Windows Phone';
-                    oThis.version = new Version({
-                        value: ua.match(/Windows Phone OS ([0-9.]*)/)[1],
-                        details: 2
-                    });
+                    oThis.version = ua.match(/Windows Phone OS ([0-9.]*)/)[1];
 
                     if (oThis.version < 7) {
                         oThis.type = 'Windows Mobile';
@@ -587,20 +487,13 @@
             */
             if (ua.match('Android')) {
                 oThis.type = 'Android';
-                oThis.version = null;
 
                 if (match = /Android(?: )?(?:AllPhone_|CyanogenMod_)?(?:\/)?v?([0-9.]+)/.exec(ua.replace('-update', '.'))) {
-                    oThis.version = new Version({
-                        value: match[1],
-                        details: 3
-                    })
+                    oThis.version = match[1];
                 }
 
                 if (ua.match('Android Eclair')) {
-                    oThis.version = new Version({
-                        value: '2.0',
-                        details: 3
-                    });
+                    oThis.version = '2.0';
                 }
             }
 
@@ -612,36 +505,29 @@
                 oThis.type = 'Google TV';
 
                 if (ua.match('Chrome/5.')) {
-                    oThis.version = new Version({
-                        value: '1'
-                    });
+                    oThis.version = '1';
                 }
 
                 if (ua.match('Chrome/11.')) {
-                    oThis.version = new Version({
-                        value: '2'
-                    });
+                    oThis.version = '2';
                 }
 
-                this.device.type = 'television';
             }
 
             /**
-             *      WoPhone
+             *   WoPhone
              */
 
             if (ua.match('WoPhone')) {
                 oThis.type = 'WoPhone';
 
                 if (match = /WoPhone\/([0-9\.]*)/.exec(ua)) {
-                    oThis.version = new Version({
-                        value: match[1]
-                    });
+                    oThis.version = match[1];
                 }
             }
 
             /**
-             *      BlackBerry
+             *   BlackBerry
              */
 
             if (ua.match('BlackBerry') || ua.match('BB10')) {
@@ -649,17 +535,11 @@
 
                 if (!ua.match('Opera')) {
                     if (match = /BlackBerry([0-9]*)\/([0-9.]*)/.exec(ua)) {
-                        oThis.version = new Version({
-                            value: match[2],
-                            details: 2
-                        });
+                        oThis.version = match[2];
                     }
 
                     if (match = /Version\/([0-9.]*)/.exec(ua)) {
-                        oThis.version = new Version({
-                            value: match[1],
-                            details: 2
-                        });
+                        oThis.version = match[1];
                     }
 
                     if (oThis.version >= 10) {
@@ -674,17 +554,11 @@
 
             if (ua.match('RIM Tablet OS')) {
                 oThis.type = 'BlackBerry Tablet OS';
-                oThis.version = new Version({
-                    value: ua.match(/RIM Tablet OS ([0-9.]*)/)[1],
-                    details: 2
-                });
+                oThis.version = ua.match(/RIM Tablet OS ([0-9.]*)/)[1];
             } else if (ua.match('PlayBook')) {
                 if (match = /Version\/(10[0-9.]*)/.exec(ua)) {
                     oThis.type = 'BlackBerry';
-                    oThis.version = new Version({
-                        value: match[1],
-                        details: 2
-                    });
+                    oThis.version = match[1];
                 }
             }
 
@@ -874,7 +748,7 @@
 		params: {
 			"ic": "pageview",	//事件类型
 			"osn": system.type.toLowerCase(), // 操作系统类型（mac、windows、ios、linux、Android）
-			"osv": system.version.alias || system.version.original || system.version, //操作系统版本
+			"osv": system.version, //操作系统版本
 			"brn": browser.type, //浏览器类型（chrome、ie、safri、opera、Firefox）
 			"brv": browser.version, //浏览器版本号
 			"gr": system.gpu_renderer, // GPU渲染器
@@ -942,7 +816,7 @@
 		/*发送统计请求
 		* @param param { Array } 参数数组 [[key, value], [key, value]],自定义参数上传，仅当次有效
 		*/
-		requestInfo: function(param){ 
+		requestInfo: function(param){
 			var oThis = this;
 			oThis.pushParams();
 
