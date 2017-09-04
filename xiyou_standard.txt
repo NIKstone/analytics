@@ -77,9 +77,7 @@ function ajaxImg(_url){
 	// 页面展示统计
         if(isOnline === "true"){
             _ma('send', 'PosterVisit');
-            window.onload = function(){
-                ajaxImg("<{$template_display_api}>");
-            };
+            ajaxImg("<{$template_display_api}>");
         }
 </script>
 
@@ -114,6 +112,16 @@ function ajaxImg(_url){
 </script>
 注：640是设计图的尺寸，可更改，在写css时，所有长度单位均使用rem，比如在设计图上的一个元素为100px * 100px.写css的时候就这么使用：“width:1rem; height:1rem;”避免了单位换算和计算百分比。
 
+12. BUG 惊现
+"window.onload=function(){}"。
+onload 其实是window对象的一个属性。官方文档原文：
+    “The onload property of the GlobalEventHandlers mixin is an event handler for the load event of a Window, XMLHttpRequest, <img> element, etc., which fires when the resource has loaded.”
+
+onload事件属性，当加载的时候触发回调。
+所以当有多个地方定义的时候，window.onload相当于被复写多次，最终生效执行的就是最后一次赋值回调。落地页经常放在其他APP或者网页中，一旦他们在页面最后或者我们的代码之后注入一段JS，复写了window.onload回调事件。我们的代码将不会执行。为了防止这种情况发生。落地页页面上及统计代码不要使用window.onload。
+如果页面要用到onload事件，可以在单独的dom(支持改事件的：<body>, <frame>, <frameset>, <iframe>, <img>, <link>, <script>)上添加，而不是window.onload；或者使用jquery的“$(document).ready(function(){...});”，注意的是，jquery1.9之前的版本，jquery的onload回先于window.onload执行，后面的版本则相反。
+如果不想使用jquery,也可以自己封装一个函数，参考jquery的源码。
+原文链接：https://developer.mozilla.org/en/docs/Web/API/GlobalEventHandlers/onload
 
 
 
