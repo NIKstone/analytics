@@ -599,7 +599,7 @@
             img = win[n] = new Image();
             img.onload = function () {
                 win[n] = null;
-                (callback || emptyFunction)();
+                (callback || emptyFunction)(true);
             };
             img.onerror = function(){
             	win[n] = null;
