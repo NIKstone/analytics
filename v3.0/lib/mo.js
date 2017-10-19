@@ -1,6 +1,6 @@
 /**
 * analytics for xiyou
-* v2.0
+* v3.0
 * author: NIKstone (shitoubean@163/com)
 */
 !function(){
@@ -129,16 +129,19 @@
 
 			var winWidth = 0, winHeight = 0;
 			//获取窗口宽度 
-			if (window.innerWidth)
+			if (window.innerWidth){
 				winWidth = window.innerWidth;
-			else if (document.body && document.body.clientWidth)
+			} else if (document.body && document.body.clientWidth){
 				winWidth = document.body.clientWidth;
+			}
 
 			//获取窗口高度 
-			if (window.innerHeight)
+			if (window.innerHeight){
 				winHeight = window.innerHeight;
-			else if (document.body && document.body.clientHeight)
+			} else if (document.body && document.body.clientHeight){
 				winHeight = document.body.clientHeight;
+			}
+
 			//通过深入Document内部对body进行检测，获取窗口大小 
 			if (document.documentElement && document.documentElement.clientHeight && document.documentElement.clientWidth) {
 				winHeight = document.documentElement.clientHeight;
@@ -207,6 +210,7 @@
 
 			if("douyu_android" == ua.toLowerCase()){
 				oThis.type = "douyuapp";
+				return;
 			}
 		}
 	};
@@ -250,15 +254,13 @@
 				this.screen_colors = ( window.screen.colorDepth || 0 ) + '-bit';
 			}
 
-			try{
-				var canvas = document.createElement("canvas");
-				var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-				if(gl){
-					var debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
-					this.gpu_renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || ""; // 显卡渲染器
-					this.gpu_vender = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) || "";   // 显卡供应商
-				}
-			}catch(e){}
+			var canvas = document.createElement("canvas");
+			var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl") || "";
+			if(gl){
+				var debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
+				this.gpu_renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || ""; // 显卡渲染器
+				this.gpu_vender = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) || "";   // 显卡供应商
+			}
 		},
 		getInfo: function(){
 			//平台、设备和操作系统
@@ -561,107 +563,11 @@
                     oThis.version = match[1];
                 }
             }
-
 		}
 	};
 
 	system.getDevice();
 	system.getInfo();
-
-	var flash = {
-		flash_install: false,
-		flash_version: "",
-		fancy3d: false,
-		getInfo: function(){
-			var hasFlash = 0; //是否安装了flash
-		    var flashVersion = 0; //flash版本
-		    var isIE = /\b(?:msie |ie |trident\/[0-9].*rv[ :])([0-9.]+)/.test(ua.toLowerCase()); //是否IE浏览器
-
-		    if (isIE) {
-		    	try {
-			        var swf = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
-			        if (swf) {
-			            hasFlash = 1;
-			            flashVersion = swf.GetVariable("$version");
-			            flashVersion = flashVersion.replace(/WIN/g, '').replace(/,/g, '.');
-			        }
-			    } catch(e){ }
-		    } else {
-		        if (navigator.plugins && navigator.plugins.length > 0) {
-		            var swf = navigator.plugins["Shockwave Flash"];
-		            if (swf) {
-		                hasFlash = 1;
-		                flashVersion = swf.description
-				            .replace(/([a-zA-Z]|\s)+/, "")
-				            .replace(/(\s)+r/, ".") + ".0";
-		            }
-		        }
-		    }
-
-		    if(hasFlash) this.flash_install = true;
-		    if(flashVersion) this.flash_version = flashVersion;
-
-			if (!isIE) {
-				try {
-					navigator.plugins.refresh(false);
-					for (var m in window.navigator.mimeTypes) {
-						if (window.navigator.mimeTypes[m].type == 'application/fancy-npruntime-fancy3d-plugin') {
-							this.fancy3d = true;
-						}
-					}
-				} catch (e) {
-					this.fancy3d = false;
-				}
-			} else {
-				try {
-					new ActiveXObject("FANCY3DOCX.Fancy3DOCXCtrl.1");
-					this.fancy3d = true;
-				} catch (e) {
-					this.fancy3d = false;
-				}
-			}
-		}
-	};
-
-	flash.getInfo();
-
-	var Cookie = {
-		set: function(name,value,time){
-			var strsec = this.getSec(time);
-			var exp = new Date();
-			exp.setTime(exp.getTime() + strsec*1);
-			document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
-		},
-		del: function(name){
-			var exp = new Date();
-			exp.setTime(exp.getTime() - 1);
-			var cval=getCookie(name);
-			if(cval!=null)
-				document.cookie = name + "="+cval+";expires="+exp.toGMTString();
-		},
-		get: function(name){
-			var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
-			if(arr=document.cookie.match(reg))
-				return unescape(arr[2]);
-			else
-				return null;
-		},
-		getSec: function(str){//param: 's20','d20','h20','y20'
-			var str1=str.substring(1,str.length)*1;
-			var str2=str.substring(0,1);
-			if (str2=="s"){
-				return str1*1000;
-			}
-			else if (str2=="h"){
-				return str1*60*60*1000;
-			}
-			else if (str2=="d"){
-				return str1*24*60*60*1000;
-			}else if(str2=="y"){
-				return str1*365*24*60*60*1000;
-			}
-		}
-	};
 
 	/**
 	* 用于向服务器发出请求的对象。
@@ -691,9 +597,13 @@
             var win = window;
             var n = 'moImage_' + oThis.make_rnd(),
             img = win[n] = new Image();
-            img.onload = img.onerror = function () {
+            img.onload = function () {
                 win[n] = null;
                 (callback || emptyFunction)();
+            };
+            img.onerror = function(){
+            	win[n] = null;
+            	(callback || emptyFunction)(false);
             };
             img.src = src;
         };
@@ -732,7 +642,7 @@
             if(request){
                 request.onreadystatechange = function(){
                     if(request.readyState == 4){
-                        callback && callback();
+                        (callback || emptyFunction)(true);
                         request = null;
                     }
                 };
@@ -850,9 +760,11 @@
 			//通过Image对象请求后端脚本
 			var ajax = new Ajax();
 			
-			ajax.send(xiyou_analytics_path, str_req, function(){
-			// 	//发送成功后回调函数
-				
+			ajax.send(xiyou_analytics_path, str_req, function(success){
+				//发送成功后回调函数
+				if(!success){
+					window.reportBug && window.reportBug({msg: str_req.replace(/&/g, ',')});
+				}
 			}, false);
 		}
 	};
