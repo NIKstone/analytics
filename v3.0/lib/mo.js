@@ -4,6 +4,7 @@
 * author: NIKstone (shitoubean@163/com)
 */
 !function(){
+	try {
 	if(window.hasMo) return;
 	var ua = navigator.userAgent;
 	var platform = navigator.platform;
@@ -875,4 +876,13 @@
 	myOnload();
 	
 	window.hasMo = 1;
+	} catch(e){ 
+		// window.reportBug && window.reportBug({msg: e});
+		var msg = e + ",ua: " + navigator.userAgent; 
+		var xhr = new Image();
+	    xhr.onload = xhr.error = function() {
+	    	xhr = null;
+	    };
+	    xhr.src = "//down.xiyouence.com/error/report?msg=" + msg;
+	}
 }(window);

@@ -32,10 +32,11 @@
 
 
 	window.reportBug = function(data) {
-	    data.msg += ', User Agent: ' + navigator.userAgent;
-	    var dataString = JSON.stringify(data);
-	    var xhr = new Image();
-	    xhr.onload = xhr.error = function() {};
-	    xhr.src = report_bug_url + "?msg=" + data.msg;
+		alert(data.msg);
+	    // data.msg += ', User Agent: ' + navigator.userAgent;
+	    // var dataString = JSON.stringify(data);
+	    // var xhr = new Image();
+	    // xhr.onload = xhr.error = function() {};
+	    // xhr.src = report_bug_url + "?msg=" + data.msg;
 	};
 })(window);

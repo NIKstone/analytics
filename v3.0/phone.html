@@ -35,6 +35,27 @@
         <a href="javascript:;" onclick="javascript:a = b;">测试报错</a>
     </p>
 
+    <script>
+        window.onerror = function(message, source, lineno, colno, error){
+            var string = message.toLowerCase();
+            var substring = "script error";
+            if (string.indexOf(substring) > -1){
+                sendError("error=script_error");
+            } else {
+                sendError("msg="+message+"&src="+encodeURIComponent(source)+"&line="+lineno+"&col="+colno+"&err="+error);
+            }
+            return false;
+        };
+
+        function sendError(_str){
+           reportBug({msg: _str});
+        };
+
+    	window.reportBug = function(data){
+            alert(data.msg);
+        };
+    </script>
+
 	<script type="text/javascript">
 
 		(function(i,s,o,g,r,a,m){i['analyticsObject']=r;i[r]=i[r]||function(){
