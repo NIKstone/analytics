@@ -257,11 +257,17 @@
 
 			var canvas = document.createElement("canvas");
 			var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl") || "";
-			if(gl){
-				var debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
-				this.gpu_renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || ""; // 显卡渲染器
-				this.gpu_vender = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) || "";   // 显卡供应商
+			if(!gl){
+				return;
 			}
+			var debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
+
+			if(!debugInfo){
+				return;
+			}
+			this.gpu_renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL || "") || ""; // 显卡渲染器
+			this.gpu_vender = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL || "") || "";   // 显卡供应商
+			
 		},
 		getInfo: function(){
 			//平台、设备和操作系统
