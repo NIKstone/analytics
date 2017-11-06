@@ -256,7 +256,14 @@
 			}
 
 			var canvas = document.createElement("canvas");
-			var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl") || "";
+			var gl = "";
+
+			if(!gl.getContext){
+				return;
+			}
+
+			gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+
 			if(!gl){
 				return;
 			}
@@ -789,15 +796,15 @@
 		* 改写window._ma 方法, 接收事件触发。
 		*/
 		window._ma = function(){
-			var arg = arguments || '';
-			if(arg && arg[0]){
-				setTracker(arg);
+			var args = arguments;
+			if(args && args[0]){
+				setTracker(args);
 			}
 		};
 
 		function setTracker(_val){
 			var oThis = this,
-				pList = _val || [];
+				pList = _val;
 
 			oThis["create"] = function(){
 				var _key = pList[1] || "",
@@ -884,7 +891,7 @@
 	window.hasMo = 1;
 	} catch(e){ 
 		// window.reportBug && window.reportBug({msg: e});
-		var msg = e + ",ua: " + navigator.userAgent; 
+		var msg = ( e && e.message ) + ",ua: " + navigator.userAgent;
 		var xhr = new Image();
 	    xhr.onload = xhr.error = function() {
 	    	xhr = null;
