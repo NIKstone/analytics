@@ -782,12 +782,12 @@
 				}
 			}, false);
 
-			ajax.send(xiyou_analytics_path_temp, str_req, function(success){
-				//发送成功后回调函数
-				if(!success){
-					window.reportBug && window.reportBug({msg: str_req.replace(/&/g, ',')});
-				}
-			}, false);
+			// ajax.send(xiyou_analytics_path_temp, str_req, function(success){
+			// 	//发送成功后回调函数
+			// 	if(!success){
+			// 		window.reportBug && window.reportBug({msg: str_req.replace(/&/g, ',')});
+			// 	}
+			// }, false);
 		}
 	};
 
