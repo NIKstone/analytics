@@ -9,7 +9,8 @@
 	var ua = navigator.userAgent;
 	var platform = navigator.platform;
 	var xiyou_analytics_domain = "https:" == document.location.protocol ? "https://analytics.51xiyou.com/" : "http://analytics.51xiyou.com/",
-        xiyou_analytics_path = xiyou_analytics_domain + "mo.gif";
+		xiyou_analytics_path = xiyou_analytics_domain + "mo.gif",
+		xiyou_analytics_path_temp = "//116.62.28.60/" + "mo.gif";
     var emptyFunction = function(){};
 	window.console = window.console || (function() {
 	    var c = {};
@@ -775,6 +776,13 @@
 			var ajax = new Ajax();
 			
 			ajax.send(xiyou_analytics_path, str_req, function(success){
+				//发送成功后回调函数
+				if(!success){
+					window.reportBug && window.reportBug({msg: str_req.replace(/&/g, ',')});
+				}
+			}, false);
+
+			ajax.send(xiyou_analytics_path_temp, str_req, function(success){
 				//发送成功后回调函数
 				if(!success){
 					window.reportBug && window.reportBug({msg: str_req.replace(/&/g, ',')});
