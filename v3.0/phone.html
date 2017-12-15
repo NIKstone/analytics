@@ -1,88 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta charset="UTF-8">
-	<title>移动端数据采集 -- demo</title>
+    <meta charset="UTF-8">
+    <title>移动端数据采集 -- demo</title>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-    <meta name ="viewport" content ="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
     <meta name="format-detection" content="telephone=no" />
     <style>
-    	* { margin: 0; padding: 0; }
-    	html { position: relative; width: 100%; height: 100%; }
-    	body { position: relative; width: 100%; color: #333; background-color: #fff; }
-    	.page { padding: 5% 10%; line-height: 2; font-size: 1.2em; word-break: break-all; }
-    	.box { padding: 10px 0; text-align: center; }
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        html {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        body {
+            position: relative;
+            width: 100%;
+            color: #333;
+            background-color: #fff;
+        }
+        
+        .page {
+            padding: 5% 10%;
+            line-height: 2;
+            font-size: 1.2em;
+            word-break: break-all;
+        }
+        
+        .box {
+            padding: 10px 0;
+            text-align: center;
+        }
     </style>
 </head>
+
 <body>
-	<div class="box">
-		<a href="javascript:;" onclick="_ma('send', 'PosterVisit');">点击发送页面展示信息</a>
-	</div>
-	<br><br><br>
-	<p class="box">
-		<a href="javascript:;" onclick="_ma('send', 'pageclick', 'PosterClick');">点击开始采集页面点击</a>
-	</p>
-	<br><br><br>
-	<p class="box">
-		<a href="javascript:;" onclick="_ma('trackEvent', 'APP', 'download');">点击发送下载统计</a>
-	</p>
-	<br><br><br>
-	<p class="box">
-		<a href="javascript:;" onclick="_ma('trackEvent', 'TemplateTrace', 'test', '测试事件')">点击发送特殊事件</a>
-	</p>
-	<br><br><br>
+    <div class="box">
+        <a href="javascript:;" onclick="_ma('send', 'testPosterVisit');">点击发送页面展示信息</a>
+    </div>
+    <br><br><br>
+    <p class="box">
+        <a href="javascript:;" onclick="_ma('send', 'pageclick', 'testPosterClick');">点击开始采集页面点击</a>
+    </p>
+    <br><br><br>
+    <p class="box">
+        <a href="javascript:;" onclick="_ma('trackEvent', 'APP', 'download');">点击发送下载统计</a>
+    </p>
+    <br><br><br>
+    <p class="box">
+        <a href="javascript:;" onclick="_ma('trackEvent', 'TemplateTrace', 'test', '测试事件')">点击发送特殊事件</a>
+    </p>
+    <br><br><br>
     <p class="box">
         <a href="javascript:;" onclick="javascript:a = bsd;">测试报错</a>
     </p>
-        
+
 
     <script>
-        window.onerror = function(message, source, lineno, colno, error){
+        window.onerror = function(message, source, lineno, colno, error) {
             var string = message.toLowerCase();
             var substring = "script error";
-            if (string.indexOf(substring) > -1){
+            if (string.indexOf(substring) > -1) {
                 sendError("error=script_error");
             } else {
-                sendError("msg="+message+"&src="+encodeURIComponent(source)+"&line="+lineno+"&col="+colno+"&err="+error);
+                sendError("msg=" + message + "&src=" + encodeURIComponent(source) + "&line=" + lineno + "&col=" + colno + "&err=" + error);
             }
             return false;
         };
 
-        function sendError(_str){
-           reportBug({msg: _str});
+        function sendError(_str) {
+            reportBug({
+                msg: _str
+            });
         };
 
-    	window.reportBug = function(data){
+        window.reportBug = function(data) {
             alert(data.msg);
         };
     </script>
 
-	<script type="text/javascript">
+    <script type="text/javascript">
+        (function(i, s, o, g, r, a, m) {
+            i['analyticsObject'] = r;
+            i[r] = i[r] || function() {
+                (i[r].q = i[r].q || []).push(arguments)
+            };
+            i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//localhost/analytics/v3.0/lib/mo.js', '_ma');
+        _ma('create', 'chid', 'test', '字段1');
+        _ma('create', 'apid', 'test', '字段1');
+        _ma('create', 'gcid', 'test', '字段2');
+        _ma('create', 'aid', 'test', '字段3');
+        _ma('create', 'paid', 'test', '字段4');
+        _ma('create', 'mid', 'test', '字段5');
+        _ma('create', 'mn', 'test', '字段5');
+        _ma('create', 'tid', 'test', '字段5');
 
-		(function(i,s,o,g,r,a,m){i['analyticsObject']=r;i[r]=i[r]||function(){
-			(i[r].q=i[r].q||[]).push(arguments)};i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m);
-			})(window, document, 'script', '//192.168.2.32/analytics/v3.0/lib/mo.js', '_ma');
-		_ma('create', 'chid', 'baiduapptest', '字段1');
-		_ma('create', 'apid', '105', '字段1');
-		_ma('create', 'gcid', '6547', '字段2');
-		_ma('create', 'aid', 'flash', '字段3');
-		_ma('create', 'paid', '7896', '字段4');
-		_ma('create', 'mid', '1256', '字段5');
-		_ma('create', 'mn', '1256', '字段5');
-		_ma('create', 'tid', '456', '字段5');
-
-	</script>
-
-    <script>
-        function setErrReport(){
-            var script = document.createElement('script');
-            script.setAttribute('src', '//192.168.2.32/analytics/v3.0/lib/xyTracker.js');
-            script.setAttribute('crossorigin', 'true');
-            document.body.appendChild(script);
-        };
-        // 页面报错统计
-        setErrReport();
+        _ma('send', 'testposterVisit');
     </script>
 </body>
+
 </html>
