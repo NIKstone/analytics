@@ -100,7 +100,6 @@
                     "//" +
                     (url.host || "") +
                     (url.pathname || "") +
-                    Util.unParseQueryString(url.query) +
                     (url.hash || "");
             },
             isString: function(str) {
@@ -787,14 +786,16 @@
                 ajax.send(xiyou_analytics_path_temp, str_req, function(success) {
                     //发送成功后回调函数
                     if (!success) {
-                        window.reportBug && window.reportBug({ msg: str_req.replace(/&/g, ',') });
+                        window.reportBug && window.reportBug({ msg: "temp__" + arr_req.join(",") }); // 上报错误
+                        ajax.send(xiyou_analytics_path_temp, str_req); // 重试一次
                     }
                 }, false);
 
                 ajax.send(xiyou_analytics_path, str_req, function(success) {
                     //发送成功后回调函数
                     if (!success) {
-                        window.reportBug && window.reportBug({ msg: str_req.replace(/&/g, ',') });
+                        window.reportBug && window.reportBug({ msg: arr_req.join(",") }); // 上报错误
+                        ajax.send(xiyou_analytics_path, str_req); // 重试一次
                     }
                 }, false);
             }
