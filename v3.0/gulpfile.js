@@ -18,7 +18,7 @@ gulp.task("script", function() {
                 except: ['require']
             }
         }))
-        .pipe(replace('51xiyou', '52xiyou'))
+        .pipe(replace('52xiyou_test', '52xiyou'))
         .pipe(replace('xiyouence_test.com', 'xiyouence.com'))
         .pipe(rename({ suffix: ".min" }))
         .pipe(gulp.dest("bin"))

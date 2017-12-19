@@ -7,8 +7,9 @@
 	if(window.hasMa) return;
 	var ua = navigator.userAgent;
 	var platform = navigator.platform;
-	var xiyou_analytics_domain = "https:" == document.location.protocol ? "https://analytics.51xiyou.com/" : "http://analytics.51xiyou.com/",
-        xiyou_analytics_path = xiyou_analytics_domain + "ma.gif";
+	var xiyou_analytics_domain = "https:" == document.location.protocol ? "https://analytics.52xiyou_test.com/" : "http://analytics.52xiyou_test.com/",
+		xiyou_analytics_path = xiyou_analytics_domain + "ma.gif";
+	var	xiyou_analytics_path_temp = "//collector.xiyouence_test.com/ma.gif";
 
     var emptyFunction = function(){};
 	window.console = window.console || (function() {
@@ -465,7 +466,7 @@
             if (ua.match('Windows')) {
                 oThis.type = 'Windows';
 
-                if (match = /Windows NT ([0-9]\.[0-9])/.exec(ua)) {
+                if (match = /Windows NT ([0-9]+\.[0-9])/.exec(ua)) {
                     oThis.version = parseVersion(match[1]);
 
                     switch (match[1]) {
@@ -855,42 +856,54 @@
 	*/
 	var Ajax = function(){
 		var oThis = this;
+
+		oThis.collectUrl = xiyou_analytics_path;
 		/**
 		* 发送请求。
 		* @param url {String} 发送请求的地址。
 		* @param param {String} 发送请求的参数串。
 		* @param callback {Function} 回调函数。
-		* @param _ioo {Boolean}
+		* @param _ioo {Boolean} 强行使用POST提交
 		*/
         oThis.send = function(url, param, callback, _ioo){
-            if(param["length"] <= 2036 || _ioo){
-                oThis.sendByImage(url + "?" + param, callback);
+			oThis.collectUrl = url;
+            if(param["length"] >= 2036 || _ioo){
+                oThis.sendByRequest(param, callback);
             }else {
-                oThis.Send(param, callback);
+				oThis.sendByImage(param, callback);
             }
         };
 		/**
         * 使用图片对象发出请求。
-        * @param src {String} 组装完毕的图片的地址。
+        * @param param {String} 组装完毕的参数。
         * @param callback {Function} 回调函数。
         */
-        oThis.sendByImage = function(src, callback){
-            var image = new Image(1, 1);
-            image.onload = function(){
-                image.onload = null;
-                (callback || emptyFunction)();
-            };
-            image.src = src;
-        };
+        oThis.sendByImage = function(param, callback){
+			var win = window;
+			var n = 'moImage_' + oThis.make_rnd(),
+				_img = win[n] = new Image();
 
-        /**
-        * 根据情况使用XMLHttpRequest或iframe对象发出请求。
-        * @param param {String} 发送请求的参数串。
-        * @param callback {Function} 回调函数。
-        */
-        oThis.Send = function(param, callback){
-            oThis.sendByRequest(param, callback);
-        };
+			_img.onload = function() {
+				win[n] = null;
+				(callback || emptyFunction)(true);
+				document.body.removeChild(_img);
+			};
+
+			_img.onerror = function() {
+				win[n] = null;
+				(callback || emptyFunction)(false);
+				document.body.removeChild(_img);
+			};
+			
+			_img.src = oThis.collectUrl + "?" + param;
+
+			document.body.appendChild(_img);
+		};
+
+		oThis.make_rnd = function() {
+			return (+new Date()) + '.r' + Math.floor(Math.random() * 1000);
+		};
+		
         /**
          * 使用XMLHttpRequest对象发出请求。
          * @param param {String} 发送请求的参数串。
@@ -898,29 +911,33 @@
          */
         oThis.sendByRequest = function(param, callback){
             var request,
-                Request = window.XDomainRequest;
-            if(Request){
-                request = new Request;
-                request.open("GET", xiyou_analytics_path);
-            }else if(Request = window.XMLHttpRequest){
-                Request = new Request;
-                if("withCredentials" in Request){
-                    request = Request;
-                    request.open("GET", xiyou_analytics_path, _true);
-                    request.setRequestHeader("Content-Type", "text/plain");
-                }
-            }
-            if(request){
-                request.onreadystatechange = function(){
-                    if(request.readyState == 4){
-                        callback && callback();
-                        request = null;
-                    }
-                };
-                request.send(param);
-                return _true;
-            }
-            return _false;
+			Request = window.XMLHttpRequest;
+			if (Request)
+			{// code for IE7+, Firefox, Chrome, Opera, Safari
+				request = new XMLHttpRequest();
+			}
+			else
+			{// code for IE6, IE5
+				request = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			if (request) {
+				request.open("POST", oThis.collectUrl, true);
+				request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+				request.onreadystatechange = function() {
+					if (request.readyState == 4) {
+						if(request.status == 200){
+							(callback || emptyFunction)(true);
+						}
+						else {
+							(callback || emptyFunction)(false);
+						}
+						request = null;
+					}
+				};
+				request.send(param);
+				return true;
+			}
+			return false;
         };
 	};
 
@@ -1043,9 +1060,19 @@
 
 			//通过Image对象请求后端脚本
 			var ajax = new Ajax();
-			ajax.send(xiyou_analytics_path, str_req, function(){
-				//发送成功后回调函数
-				
+
+			ajax.send(xiyou_analytics_path, str_req, function(sendSuccess){
+				//发送失败重试
+				if(!sendSuccess){
+					ajax.send(xiyou_analytics_path, str_req, null, true);
+				}
+			}, false);
+
+			ajax.send(xiyou_analytics_path_temp, str_req, function(sendSuccess){
+				//发送失败重试
+				if(!sendSuccess){
+					ajax.send(xiyou_analytics_path_temp, str_req, null, true);
+				}
 			}, false);
 		}
 	};

@@ -8,9 +8,9 @@
         if (window.hasMo) return;
         var ua = navigator.userAgent;
         var platform = navigator.platform;
-        var xiyou_analytics_domain = "https:" == document.location.protocol ? "https://analytics.51xiyou.com/" : "http://analytics.51xiyou.com/",
+        var xiyou_analytics_domain = "https:" == document.location.protocol ? "https://analytics.52xiyou.com/" : "http://analytics.52xiyou.com/",
             xiyou_analytics_path = xiyou_analytics_domain + "mo.gif",
-            xiyou_analytics_path_temp = "//collector.xiyouence_test.com/mo.gif";
+            xiyou_analytics_path_temp = "//collector.xiyouence.com/mo.gif";
         var emptyFunction = function() {};
         window.console = window.console || (function() {
             var c = {};
@@ -591,6 +591,7 @@
          */
         var Ajax = function() {
             var oThis = this;
+            oThis.collectUrl = xiyou_analytics_path;
             /**
              * 发送请求。
              * @param url {String} 发送请求的地址。
@@ -599,18 +600,19 @@
              * @param _ioo {Boolean}
              */
             oThis.send = function(url, param, callback, _ioo) {
-                if (param["length"] <= 2036 || _ioo) {
-                    oThis.sendByImage(url + "?" + param, callback);
+                oThis.collectUrl = url;
+                if (param["length"] >= 2036 || _ioo) {
+                    oThis.sendByRequest(param, callback);
                 } else {
-                    oThis.Send(param, callback);
+                    oThis.sendByImage(param, callback);
                 }
             };
             /**
              * 使用图片对象发出请求。
-             * @param src {String} 组装完毕的图片的地址。
+             * @param param {String} 组装完毕的参数。
              * @param callback {Function} 回调函数。
              */
-            oThis.sendByImage = function(src, callback) {
+            oThis.sendByImage = function(param, callback) {
                 var win = window;
                 var n = 'moImage_' + oThis.make_rnd(),
                     img = win[n] = new Image();
@@ -624,7 +626,7 @@
                     (callback || emptyFunction)(false);
                     document.body.removeChild(img);
                 };
-                img.src = src;
+                img.src = oThis.collectUrl + "?" + param;
 
                 document.body.appendChild(img);
             };
@@ -634,40 +636,36 @@
             };
 
             /**
-             * 根据情况使用XMLHttpRequest或iframe对象发出请求。
-             * @param param {String} 发送请求的参数串。
-             * @param callback {Function} 回调函数。
-             */
-            oThis.Send = function(param, callback) {
-                oThis.sendByRequest(param, callback);
-            };
-            /**
              * 使用XMLHttpRequest对象发出请求。
              * @param param {String} 发送请求的参数串。
              * @param callback {Function} 回调函数。
              */
             oThis.sendByRequest = function(param, callback) {
                 var request,
-                    Request = window.XDomainRequest;
-                if (Request) {
-                    request = new Request;
-                    request.open("GET", xiyou_analytics_path + "?" + param);
-                } else if (Request = window.XMLHttpRequest) {
-                    Request = new Request;
-                    if ("withCredentials" in Request) {
-                        request = Request;
-                        request.open("GET", xiyou_analytics_path + "?" + param, true);
-                        request.setRequestHeader("Content-Type", "text/plain");
-                    }
+                    Request = window.XMLHttpRequest;
+                if (Request)
+                {// code for IE7+, Firefox, Chrome, Opera, Safari
+                    request = new XMLHttpRequest();
+                }
+                else
+                {// code for IE6, IE5
+                    request = new ActiveXObject("Microsoft.XMLHTTP");
                 }
                 if (request) {
+                    request.open("POST", oThis.collectUrl, true);
+                    request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
                     request.onreadystatechange = function() {
                         if (request.readyState == 4) {
-                            (callback || emptyFunction)(true);
+                            if(request.status == 200){
+                                (callback || emptyFunction)(true);
+                            }
+                            else {
+                                (callback || emptyFunction)(false);
+                            }
                             request = null;
                         }
                     };
-                    request.send();
+                    request.send(param);
                     return true;
                 }
                 return false;
@@ -784,10 +782,11 @@
                 var ajax = new Ajax();
 
                 ajax.send(xiyou_analytics_path_temp, str_req, function(success) {
+                    
                     //发送成功后回调函数
                     if (!success) {
                         window.reportBug && window.reportBug({ msg: "temp__" + arr_req.join(",") }); // 上报错误
-                        ajax.send(xiyou_analytics_path_temp, str_req); // 重试一次
+                        ajax.send(xiyou_analytics_path_temp, str_req, null, true); // 重试一次
                     }
                 }, false);
 
@@ -795,7 +794,7 @@
                     //发送成功后回调函数
                     if (!success) {
                         window.reportBug && window.reportBug({ msg: arr_req.join(",") }); // 上报错误
-                        ajax.send(xiyou_analytics_path, str_req); // 重试一次
+                        ajax.send(xiyou_analytics_path, str_req, null, true); // 重试一次
                     }
                 }, false);
             }
