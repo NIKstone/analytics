@@ -8,9 +8,9 @@
         if (window.hasMo) return;
         var ua = navigator.userAgent;
         var platform = navigator.platform;
-        var xiyou_analytics_domain = "https:" == document.location.protocol ? "https://analytics.52xiyou.com/" : "http://analytics.52xiyou.com/",
+        var xiyou_analytics_domain = "https:" == document.location.protocol ? "https://analytics.52xiyou_test.com/" : "http://analytics.52xiyou_test.com/",
             xiyou_analytics_path = xiyou_analytics_domain + "mo.gif",
-            xiyou_analytics_path_temp = "//collector.xiyouence.com/mo.gif";
+            xiyou_analytics_path_temp = "//collector.xiyouence_test.com/mo.gif";
         var emptyFunction = function() {};
         window.console = window.console || (function() {
             var c = {};
@@ -786,7 +786,9 @@
                     //发送成功后回调函数
                     if (!success) {
                         window.reportBug && window.reportBug({ msg: "temp__" + arr_req.join(",") }); // 上报错误
-                        ajax.send(xiyou_analytics_path_temp, str_req, null, true); // 重试一次
+                        setTimeout(function() {
+                            ajax.send(xiyou_analytics_path_temp, str_req, null, true); // 重试一次    
+                        }, 1000);
                     }
                 }, false);
 
@@ -794,7 +796,9 @@
                     //发送成功后回调函数
                     if (!success) {
                         window.reportBug && window.reportBug({ msg: arr_req.join(",") }); // 上报错误
-                        ajax.send(xiyou_analytics_path, str_req, null, true); // 重试一次
+                        setTimeout(function() {
+                            ajax.send(xiyou_analytics_path, str_req, null, true); // 重试一次    
+                        }, 1000);
                     }
                 }, false);
             }
