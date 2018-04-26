@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #dom {
+            padding: 50px 100px;
+        }
+        .sform {
+            padding: 20px;
+        }
+        .sform .form-group {
+            margin-top: 10px;
+        }
+        .sform .form-group input {
+            line-height: 2;
+            color: #333;
+            font-size: 16px;
+        }
+        .sform button {
+            border-radius: 0;
+            padding: 2px 10px;
+            line-height: 26px;
+            text-align: center;
+        }
+    </style>
+    <script src="http://ui.xiyoucdn.com/qui.js"></script>
+</head>
+<body>
+    <div class="sform">
+        <form action="" id="sform">
+            <div class="form-group">
+                开始时间：
+                <input type="datetime" name="date_start" class="date-start" placeholder="2018-1-5 20:00" value="2018-1-5 20:00">
+            </div>
+            <div class="form-group">
+                结束时间：
+                <input type="datetime" name="date_end" class="date-end" placeholder="2018-1-5 24:00" value="2018-1-5 24:00">
+            </div>
+            <div class="form-group">
+                页码：
+                <input type="number" name="page" value="1">
+            </div>
+            <div class="form-group">
+                落地页地址：
+                <input type="text" id="page-url" value="" placeholder="或关键词，如：“show_11767.html”">
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="subbtn">点击查询</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="dom"></div>
+    <script>
+
+        var pageUrl = "";
+        Qui.use('jquery', function($){
+
+            var $form = $('#sform');
+            var $iptDateStart = $('.date-start', $form),
+                $iptDateEnd = $('.date-end', $form);
+
+            $form.on('submit', function(e){
+                e.preventDefault();
+
+                var formData = $form.serializeArray();
+
+                $.getJSON('//down.xiyouence.com/error/list', formData, function(resp){
+                    pageUrl = document.getElementById("page-url").value;
+                    ShowResult(resp.data);
+                });
+
+                return false;
+            });
+            
+        });
+
+        function ShowResult(errList){
+            var ipList = [],
+                php_visit = [],
+                php_download = [],
+                java_visit = [],
+                java_download = [],
+                distinctIpList = [];
+            for(var i=0; i<errList.length; i++){
+                var _li = errList[i];
+
+                if(_li.refer_site.indexOf(pageUrl) > -1){
+                    ipList.push(_li.request_ip);
+
+                    if(_li.request_params.indexOf('"ic=PosterVisit') > -1){ php_visit.push(_li); }
+                    if(_li.request_params.indexOf('"ic=TrackEvent') > -1){ php_download.push(_li); }
+                    if(_li.request_params.indexOf('temp__ic=PosterVisit') > -1){ java_visit.push(_li); }
+                    if(_li.request_params.indexOf('temp__ic=TrackEvent') > -1){ java_download.push(_li); }
+                }
+            }
+
+            distinctIpList = Distinct(ipList);
+
+            document.getElementById('dom').innerHTML = 
+                '<br>信息总条数：' + errList.length +
+                '<br>发送失败次数(该地址)：' + ipList.length + 
+                '<br> &nbsp;&nbsp;php访问统计：' + php_visit.length + 
+                '<br> &nbsp;&nbsp;php下载统计：' + php_download.length + 
+                '<br> &nbsp;&nbsp;java访问统计：' + java_visit.length + 
+                '<br> &nbsp;&nbsp;java下载统计：' + java_download.length + 
+                '<br><br> 去重IP数：' + distinctIpList.length + 
+                '<br>IP列表：<br>' + ipList.join('<br>');
+        }
+
+
+        function Distinct(arr){
+            if(arr.length < 2 || !Array.isArray(arr)) {
+                return arr || '';
+            }
+            var arr2 = [];
+            for(var i=0; i<arr.length;i++){
+                var _li = arr[i];
+                if(arr2.indexOf(_li) < 0){
+                    arr2.push(_li);
+                }
+            }
+
+            return arr2;
+        }
+
+
+        function send_join_img(){
+            var _img = new Image(1,1);
+            _img.onload = function(){ };
+            _img.onerror = function(){ send_join_request(); };
+
+            _img.src = "//collector.xiyouence.com/count?url=<{$packageInfo.id}>";
+
+            document.head.appendChild(_img);
+        }
+
+        function send_join_request(){
+            var request = new XMLHttpRequest();
+            request.open("POST", "//collector.xiyouence.com/count", true);
+            request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+            request.onreadystatechange = function() {
+                if (request.readyState == 4) {
+                    request = null;
+                }
+            };
+            request.send("url=<{$packageInfo.id}>");
+        };
+        send_join_img();
+    </script>
+</body>
+</html>

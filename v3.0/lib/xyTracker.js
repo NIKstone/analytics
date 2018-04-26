@@ -24,7 +24,7 @@
             ext = ext.join(",");
             data.msg = 'Script Error: [' + msg + ']->[' + url + ',' + line + ':' + col + ']' + ext;
         }
-        if (data.url && data.line && data.col && data.msg) {
+        if (data.url && data.line > 1 && data.col && data.msg) {
             reportBug(data);
         }
         return true;
@@ -32,8 +32,8 @@
 
 
     window.reportBug = function(data) {
-        data.msg += ', User Agent: ' + navigator.userAgent;
         var dataString = JSON.stringify(data);
+
         var xhr = new Image(1, 1);
         xhr.onload = xhr.error = function() {
             xhr = null;

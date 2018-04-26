@@ -8,39 +8,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
     <meta name="format-detection" content="telephone=no" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
-        
-        html {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-        
-        body {
-            position: relative;
-            width: 100%;
-            color: #333;
-            background-color: #fff;
-        }
-        
-        .page {
-            padding: 5% 10%;
-            line-height: 2;
-            font-size: 1.2em;
-            word-break: break-all;
-        }
-        
-        .box {
-            padding: 10px 0;
-            text-align: center;
-        }
+        *{margin:0;padding:0;}
+        html{position:relative;width:100%;height:100%;}
+        body{position:relative;width:100%;color:#333;background-color:#fff;}
+        .page{padding:5% 10%;line-height:2;font-size:1.2em;word-break:break-all;}
+        .box{padding:10px 0;text-align:center;}
     </style>
+    <script src="//ui.xiyoucdn.com/analytics/xyTracker.min.js"></script>
+    <!-- <script>
+        function setErrReport(){
+            var script = document.createElement('script');
+            script.setAttribute('src', '//ui.xiyoucdn.com/analytics/xyTracker.min.js'); //ui.xiyoucdn.com/analytics/xyTracker.min.js, ./lib/xyTracker.js
+            document.head.appendChild(script);
+        };
+        // 页面报错统计
+        setErrReport();
+    </script> -->
+    
 </head>
 
-<body onpagehide="alert('on page hide');">
+<body>
+    
     <div class="box">
         <a href="javascript:;" onclick="_ma('send', 'testPosterVisit');">点击发送页面展示信息</a>
     </div>
@@ -61,29 +49,6 @@
         <a href="javascript:;" onclick="javascript:a = bsd;">测试报错</a>
     </p>
 
-    <script>
-        window.onerror = function(message, source, lineno, colno, error) {
-            var string = message.toLowerCase();
-            var substring = "script error";
-            if (string.indexOf(substring) > -1) {
-                sendError("error=script_error");
-            } else {
-                sendError("msg=" + message + "&src=" + encodeURIComponent(source) + "&line=" + lineno + "&col=" + colno + "&err=" + error);
-            }
-            return false;
-        };
-
-        function sendError(_str) {
-            reportBug({
-                msg: _str
-            });
-        };
-
-        window.reportBug = function(data) {
-            console.info(data.msg);
-        };
-    </script>
-
     <script type="text/javascript">
         (function(i, s, o, g, r, a, m) {
             i['analyticsObject'] = r;
@@ -91,12 +56,10 @@
                 (i[r].q = i[r].q || []).push(arguments)
             };
             i[r].l = 1 * new Date();
-            a = s.createElement(o),
-                m = s.getElementsByTagName(o)[0];
-            a.async = 1;
-            a.src = g;
-            m.parentNode.insertBefore(a, m)
-        })(window, document, 'script', '//localhost/analytics/v3.0/lib/mo.js', '_ma');
+            var b = s.createElement('script');
+            b.src = g || '';
+            s.body.appendChild(b);
+        })(window, document, 'script', '//test.local.com/analytics/v3.0/lib/mo.js', '_ma');
         _ma('create', 'chid', 'test2', '字段1');
         _ma('create', 'apid', 'test', '字段1');
         _ma('create', 'gcid', 'test', '字段2');
