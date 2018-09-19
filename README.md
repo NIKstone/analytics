@@ -13,10 +13,10 @@ By stoneNIK
 ```
 _ma('create', key, value, description);
 ```
-  "create" - 关键字，表示创建参数字段 
+* create - 关键字，表示创建参数字段 
 * key - 字段名
 * value - 参数值
-* description - 描述字段，（暂不采集）
+* description - 描述字段，（***暂不采集***）
 ```
 _ma('create', 'aid', '1584236', '广告id');
 ```
@@ -46,11 +46,11 @@ send_key - 页面点击事件，事件名
 ```
 _ma('trackEvent', category, action, description, extraArr);
 ```
-trackEvent - 关键字，标识特殊事件 
-category {String} - 要监控的目标的类型名称，通常是同一组目标的名字，比如”视频”、”音乐”、”软件”、”游戏”等等。该项必选。
-action - 用户跟目标交互的行为，如”播放”、”暂停”、”下载”等等。该项必选。
-description {String} - 事件的一些额外信息，通常可以是歌曲的名称、软件的名称、链接的名称等等。该项可选。
-extraArr {Array} -为当前发送统计的请求添加自定义字段，比如描述，时间，备注等。数组格式为二维数组，如： [[key1,value1],[key2,value2],.....]。该项可选。
+* trackEvent - 关键字，标识特殊事件 
+* category {String} - 要监控的目标的类型名称，通常是同一组目标的名字，比如”视频”、”音乐”、”软件”、”游戏”等等。该项必选。
+* action - 用户跟目标交互的行为，如”播放”、”暂停”、”下载”等等。该项必选。
+* description {String} - 事件的一些额外信息，通常可以是歌曲的名称、软件的名称、链接的名称等等。该项可选。
+* extraArr {Array} -为当前发送统计的请求添加自定义字段，比如描述，时间，备注等。数组格式为二维数组，如： [[key1,value1],[key2,value2],.....]。该项可选。
 
 事件触发后会向后台发送数据，发送字段参数：
 * cat: category, 
@@ -59,7 +59,6 @@ extraArr {Array} -为当前发送统计的请求添加自定义字段，比如�
 
 ## 5.其他
 删除字段，删除后不再向后台发送该字段（仅能用于删除自定义参数）
-例如： 
 ```
 _ma('create', 'aid', '123456');
 _ma('create', 'pid', '456789');
