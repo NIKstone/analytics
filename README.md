@@ -9,34 +9,36 @@ By stoneNIK
 ```
 (function(i,s,o,g,r,a,m){i['analyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)};i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window, document, 'script', 'lib/ma.js', '_ma');
 ```
+
 ## 2.添加自定义参数字段。（海报id、广告id、海报名称、描述字段等）
 _ma('create', key, value, description);
-```
-_ma('create', 'aid', '1584236', '广告id');
-```
 * create - 关键字，表示创建参数字段 
 * key - 字段名
 * value - 参数值
 * description - 描述字段，（***暂不采集***）
+```
+_ma('create', 'aid', '1584236', '广告id');
+```
 
 ## 3.添加统计事件（发送）
 _ma('send', type, data);
-```
-_ma("send", "PosterVisit", [["open_time", (new Date()).getTime()], ["location", "beijing"]]);
-```
 * send - 关键字，发送请求
 * type - 类型。参数类型："PosterVisit","MaterialVisit","pageClick"
 * data - 额外参数{array} ([[key, value], [key, value],....]) ,仅当次事件有效
+```
+_ma("send", "PosterVisit", [["open_time", new Date().getTime()], ["location", "beijing"]]);
+```
 
-#### 特殊的是：
-页面开始统计点击事件。并在点击之后发送点击坐标到后台
-_ma('send', 'pageclick', send_key);
-send_key - 页面点击事件，事件名
-**点击坐标参数固定为: “cc”**
+**特殊事件**：  
+页面开始统计点击事件。并在点击之后发送点击坐标到后台  
+_ma('send', 'pageclick', send_key);  
+send_key - 页面点击事件，事件名  
+**点击坐标参数固定为: “cc”**  
 ```
 海报点击事件
 _ma('send', 'pageclick', 'PosterClick');
 ```
+
 ## 4.特殊事件统计（按钮点击、视频播放、用户注册（登录）、文件下载等）
 _ma('trackEvent', category, action, description, extraArr);
 * trackEvent - 关键字，标识特殊事件 
