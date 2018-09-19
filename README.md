@@ -1,7 +1,7 @@
 # analytics
 By stoneNIK
 
-### 数据采集，采集页面上用户的操作，参考Google analytics以及百度统计的方式，页面自定义参数及事件。使用的是锚点的方式采集。
+> 数据采集，采集页面上用户的操作，参考Google analytics以及百度统计的方式，页面自定义参数及事件。使用的是锚点的方式采集。
 
 统计代码部署
 
@@ -14,9 +14,9 @@ By stoneNIK
 _ma('create', key, value, description);
 ```
   "create" - 关键字，表示创建参数字段 
-key - 字段名
-value - 参数值
-description - 描述字段，（暂不采集）
+* key - 字段名
+* value - 参数值
+* description - 描述字段，（暂不采集）
 ```
 _ma('create', 'aid', '1584236', '广告id');
 ```
@@ -25,9 +25,9 @@ _ma('create', 'aid', '1584236', '广告id');
 _ma('send', type, data);
 ```
 
-"send" - 关键字，发送请求
-type - 类型。参数类型："PosterVisit","MaterialVisit","pageClick"
-data - 额外参数{array} ([[key, value], [key, value],....]) ,仅当次事件有效
+* send - 关键字，发送请求
+* type - 类型。参数类型："PosterVisit","MaterialVisit","pageClick"
+* data - 额外参数{array} ([[key, value], [key, value],....]) ,仅当次事件有效
 
 ```
 _ma("send", "PosterVisit", [["open_time", (new Date()).getTime()], ["location", "beijing"]]);
@@ -40,7 +40,6 @@ _ma('send', 'pageclick', send_key);
 send_key - 页面点击事件，事件名
 点击坐标参数固定为: “cc”。
 ```
-e.g: 
 海报点击事件 _ma('send', 'pageclick', 'PosterClick');
 ```
 ## 4.特殊事件统计（按钮点击、视频播放、用户注册（登录）、文件下载等）
@@ -54,9 +53,9 @@ description {String} - 事件的一些额外信息，通常可以是歌曲的名
 extraArr {Array} -为当前发送统计的请求添加自定义字段，比如描述，时间，备注等。数组格式为二维数组，如： [[key1,value1],[key2,value2],.....]。该项可选。
 
 事件触发后会向后台发送数据，发送字段参数：
-cat: category, 
-act: action, 
-des: description
+* cat: category, 
+* act: action, 
+* des: description
 
 ## 5.其他
 删除字段，删除后不再向后台发送该字段（仅能用于删除自定义参数）
@@ -69,4 +68,11 @@ _ma('create', 'pid', '456789');
 _ma('clear', ['aid', 'pid']); 
 ```
 
-### 注：页面事件类型（ea）: PosterVisit（海报展示）, MaterialVisit（素材展示）, PosterClick（海报点击）, MaterialClick（素材点击）, Track（特殊事件统计）, UserRegister（注册事件）, UserLogin（登陆事件）
+### 注：页面事件类型（ea）:
+* PosterVisit（海报展示）
+* MaterialVisit（素材展示）
+* PosterClick（海报点击）
+* MaterialClick（素材点击）
+* Track（特殊事件统计）
+* UserRegister（注册事件）
+* UserLogin（登陆事件）
